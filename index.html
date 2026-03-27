@@ -550,35 +550,36 @@
 
     /* ── RESPONSIVE ────────────────────────────────── */
     @media (max-width: 768px) {
-      .film-strip { display: none; }
+      .film-strip { width: 44px; }
+      .film-inner { gap: 3px; padding: 3px; }
 
-      .nav { padding: 18px 24px; }
-      .nav.scrolled { padding: 13px 24px; }
+      .nav { padding: 18px 48px; }
+      .nav.scrolled { padding: 13px 48px; }
       .nav-links { display: none; }
       .nav-toggle { display: flex; }
 
-      .hero { flex-direction: column; padding: 100px 24px 60px; gap: 40px; text-align: center; }
+      .hero { flex-direction: column; padding: 100px 48px 60px; gap: 40px; text-align: center; }
       .hero-right { align-items: center; }
       .hero-cta { align-self: auto; }
-      .polaroid-stack { width: 240px; height: 385px; }
+      .polaroid-stack { width: 220px; height: 355px; }
 
-      .intro { padding: 72px 24px; }
+      .intro { padding: 72px 48px; }
 
-      .portfolio-header { padding: 56px 24px 36px; }
+      .portfolio-header { padding: 56px 48px 36px; }
 
       .gallery-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 3px; padding: 0 3px;
+        gap: 3px; padding: 0 48px;
       }
       .g-item.landscape { grid-column: span 2; aspect-ratio: 4/3; }
 
-      .about { padding: 64px 24px; }
+      .about { padding: 64px 48px; }
       .about-inner { flex-direction: column; gap: 36px; }
       .about-photo { flex: none; width: 100%; }
 
-      .contact { padding: 72px 24px; }
+      .contact { padding: 72px 48px; }
 
-      footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px; }
+      footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px 48px; }
 
       .lb-nav { display: none; }
     }
