@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linda Quach Photography</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:  #faf6f1;
+      --cream2: #f0e8dd;
+      --text:   #1c1612;
+      --muted:  rgba(28,22,18,0.52);
+      --faint:  rgba(28,22,18,0.12);
+      --accent: #9a7c60;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+    }
+
+    /* ── NAV ───────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 26px 92px;
+      transition: background 0.45s, padding 0.35s, border-color 0.45s;
+      border-bottom: 1px solid transparent;
+    }
+
+    .nav.scrolled {
+      background: var(--cream);
+      padding: 16px 92px;
+      border-bottom-color: var(--faint);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.45s;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent) !important; }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: var(--text);
+      transition: background 0.45s;
+    }
+
+    /* Mobile overlay */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+
+    .nav-overlay a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.6rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-overlay a:hover { color: var(--accent); }
+
+    .overlay-close {
+      position: absolute;
+      top: 24px; right: 44px;
+      font-size: 2rem;
+      color: var(--text);
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .overlay-close:hover { opacity: 1; }
+
+    /* ── HERO ──────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      background: var(--cream);
+      padding: 120px 92px 80px;
+      gap: 80px;
+    }
+
+    .hero-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .polaroid-stack {
+      position: relative;
+      width: 320px;
+      height: 510px;
+    }
+
+    .polaroid-card {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      background: #fff;
+      padding: 12px 12px 52px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  box-shadow 0.7s ease;
+      will-change: transform;
+    }
+
+    /* Resting rotations — each card has a unique angle when not active */
+    .polaroid-card:nth-child(1) { transform: rotate(-4deg) translate(-6px, 8px);  z-index: 1; }
+    .polaroid-card:nth-child(2) { transform: rotate(3deg)  translate(8px, -5px);  z-index: 2; }
+    .polaroid-card:nth-child(3) { transform: rotate(-2.5deg) translate(-4px, 4px); z-index: 3; }
+    .polaroid-card:nth-child(4) { transform: rotate(2deg)  translate(6px, 6px);   z-index: 4; }
+    .polaroid-card:nth-child(5) { transform: rotate(-1deg) translate(2px, -2px);  z-index: 5; }
+
+    .polaroid-card.active {
+      transform: rotate(-0.5deg) !important;
+      z-index: 10 !important;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    }
+
+    .polaroid-img-wrap {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: var(--cream2);
+    }
+
+    .polaroid-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-dots {
+      display: flex;
+      gap: 9px;
+    }
+    .hero-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--faint);
+      border: 1px solid var(--muted);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .hero-dot.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.4);
+    }
+
+    .hero-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.4rem, 6vw, 6rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .hero-sub-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 44px;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 12px 32px;
+      border: 1px solid rgba(28,22,18,0.35);
+      color: var(--text);
+      font-size: 0.68rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .hero-cta:hover {
+      background: var(--cream2);
+      border-color: var(--text);
+    }
+
+    /* ── FILM STRIPS ────────────────────────────────── */
+    .film-strip {
+      position: fixed;
+      top: 0;
+      width: 76px;
+      height: 100vh;
+      background: #0c0a08;
+      overflow: hidden;
+      z-index: 50;
+    }
+    .film-left  { left: 0;  box-shadow:  3px 0 18px rgba(0,0,0,0.3); }
+    .film-right { right: 0; box-shadow: -3px 0 18px rgba(0,0,0,0.3); }
+
+    .film-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 5px 5px;
+    }
+    .film-inner.scroll-down { animation: filmDown 50s linear infinite; }
+    .film-inner.scroll-up   { animation: filmUp   50s linear infinite; }
+
+    @keyframes filmDown {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-50%); }
+    }
+    @keyframes filmUp {
+      from { transform: translateY(-50%); }
+      to   { transform: translateY(0); }
+    }
+
+    .film-photo {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      display: block;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    /* ── INTRO ─────────────────────────────────────── */
+    .intro {
+      padding: 100px 92px;
+      text-align: center;
+    }
+
+    .rule {
+      width: 36px;
+      height: 1px;
+      background: var(--accent);
+      margin: 0 auto 28px;
+    }
+
+    .intro-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.55;
+      max-width: 660px;
+      margin: 0 auto 20px;
+    }
+
+    .intro-detail {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── SECTION LABELS ────────────────────────────── */
+    .section-eyebrow {
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.2;
+    }
+
+    /* ── PORTFOLIO ─────────────────────────────────── */
+    .portfolio { padding-bottom: 100px; }
+
+    .portfolio-header {
+      text-align: center;
+      padding: 72px 92px 48px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 0 92px;
+    }
+
+    .g-item {
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      background: var(--cream2);
+    }
+
+    .g-item.portrait  { aspect-ratio: 3 / 4; }
+    .g-item.landscape { aspect-ratio: 16 / 9; grid-column: span 2; }
+
+    .g-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease, filter 0.4s ease;
+    }
+    .g-item:hover img {
+      transform: scale(1.05);
+      filter: brightness(0.72);
+    }
+
+    .g-hover {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+    .g-item:hover .g-hover { opacity: 1; }
+
+    /* ── ABOUT ─────────────────────────────────────── */
+    .about {
+      background: var(--cream2);
+      padding: 96px 92px;
+    }
+
+    .about-inner {
+      max-width: 1060px;
+      margin: 0 auto;
+      display: flex;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-photo {
+      flex: 0 0 400px;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: var(--cream);
+    }
+    .about-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .about-body { flex: 1; }
+
+    .about-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.2;
+      margin: 10px 0 28px;
+    }
+
+    .about-p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 14px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 0.68rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .btn-dark {
+      background: var(--text);
+      color: var(--cream);
+      border: 1px solid var(--text);
+    }
+    .btn-dark:hover { background: transparent; color: var(--text); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(28,22,18,0.35);
+    }
+    .btn-outline:hover { border-color: var(--text); }
+
+    /* ── CONTACT ───────────────────────────────────── */
+    .contact {
+      padding: 112px 92px;
+      text-align: center;
+    }
+
+    .contact-inner { max-width: 580px; margin: 0 auto; }
+
+    .contact-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.2;
+      margin: 10px 0 18px;
+    }
+
+    .contact-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 40px;
+    }
+
+    .contact-btns {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── FOOTER ────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--faint);
+      padding: 28px 92px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--text); }
+
+    /* ── LIGHTBOX ──────────────────────────────────── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.93);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+
+    .lb-img { max-width: 90vw; max-height: 90vh; object-fit: contain; display: block; }
+
+    .lb-close {
+      position: fixed; top: 20px; right: 26px;
+      font-size: 2rem; color: #fff; opacity: 0.6;
+      background: none; border: none; cursor: pointer;
+      transition: opacity 0.2s; line-height: 1; padding: 4px;
+    }
+    .lb-close:hover { opacity: 1; }
+
+    .lb-nav {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      font-size: 2.2rem; color: #fff; opacity: 0.5;
+      background: none; border: none; cursor: pointer;
+      padding: 16px; transition: opacity 0.2s;
+    }
+    .lb-nav:hover { opacity: 1; }
+    .lb-prev { left: 12px; }
+    .lb-next { right: 12px; }
+
+    /* ── RESPONSIVE ────────────────────────────────── */
+    @media (max-width: 768px) {
+      .film-strip { display: none; }
+
+      .nav { padding: 18px 24px; }
+      .nav.scrolled { padding: 13px 24px; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+
+      .hero { flex-direction: column; padding: 100px 24px 60px; gap: 40px; text-align: center; }
+      .hero-right { align-items: center; }
+      .hero-cta { align-self: auto; }
+      .polaroid-stack { width: 240px; height: 385px; }
+
+      .intro { padding: 72px 24px; }
+
+      .portfolio-header { padding: 56px 24px 36px; }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3px; padding: 0 3px;
+      }
+      .g-item.landscape { grid-column: span 2; aspect-ratio: 4/3; }
+
+      .about { padding: 64px 24px; }
+      .about-inner { flex-direction: column; gap: 36px; }
+      .about-photo { flex: none; width: 100%; }
+
+      .contact { padding: 72px 24px; }
+
+      footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px; }
+
+      .lb-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">Linda Quach</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="nav-overlay" id="navOverlay">
+    <button class="overlay-close" onclick="toggleNav()">×</button>
+    <a href="#about"     onclick="toggleNav()">About</a>
+    <a href="#portfolio" onclick="toggleNav()">Portfolio</a>
+    <a href="#contact"   onclick="toggleNav()">Contact</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="polaroid-stack" id="polaroidStack"></div>
+      <div class="hero-dots" id="heroDots"></div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-eyebrow">Winnipeg, Manitoba</div>
+      <div class="hero-name">Linda Quach</div>
+      <div class="hero-sub-title">Photography</div>
+      <a href="#contact" class="hero-cta">Book a Session</a>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <div class="rule"></div>
+    <p class="intro-quote">"a gal and her camera, documenting love everywhere."</p>
+    <p class="intro-detail">Weddings &nbsp;·&nbsp; Engagements &nbsp;·&nbsp; Couples</p>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section class="portfolio" id="portfolio">
+    <div class="portfolio-header">
+      <div class="section-eyebrow">Work</div>
+      <div class="section-title">Portfolio</div>
+    </div>
+    <div class="gallery-grid" id="gallery"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-inner">
+      <div class="about-photo">
+        <img src="images/Set1_1.jpg" alt="Linda Quach" onerror="this.style.display='none'">
+      </div>
+      <div class="about-body">
+        <div class="section-eyebrow">About</div>
+        <div class="about-heading">About Me.</div>
+        <p class="about-p">Hi, I'm Linda — a photographer based in Winnipeg, MB with a love for capturing real, unscripted moments. I believe the most beautiful photos aren't posed — they're felt.</p>
+        <p class="about-p">From proposals on the beach to snow-covered engagements in the city, I show up with my camera and a whole lot of heart. My style blends documentary and editorial — quietly observant, but always intentional.</p>
+        <p class="about-p">Every love story deserves to be told beautifully. Let's tell yours.</p>
+        <a href="#contact" class="btn btn-dark">Let's Connect</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <div class="section-eyebrow">Get in Touch</div>
+      <div class="contact-heading">Let's document<br>your love story.</div>
+      <p class="contact-sub">I'd love to hear about your day. Reach out on Instagram or send me an email — I can't wait to connect with you.</p>
+      <div class="contact-btns">
+        <a href="https://www.instagram.com/lindaquach.photo" target="_blank" class="btn btn-outline">Instagram</a>
+        <a href="mailto:hello@lindaquach.photo" class="btn btn-dark">Send a Message</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Linda Quach Photography</span>
+    <span>Winnipeg, MB &nbsp;·&nbsp; <a href="https://www.instagram.com/lindaquach.photo" target="_blank">@lindaquach.photo</a></span>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lb-close" onclick="closeLb()">×</button>
+    <button class="lb-nav lb-prev" onclick="navLb(-1)">‹</button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <button class="lb-nav lb-next" onclick="navLb(1)">›</button>
+  </div>
+
+  <!-- FILM STRIPS -->
+  <div class="film-strip film-left"><div class="film-inner scroll-down" id="filmLeft"></div></div>
+  <div class="film-strip film-right"><div class="film-inner scroll-up" id="filmRight"></div></div>
+
+  <script>
+    // ── HERO SLIDESHOW (stacking polaroids) ──────────────────────
+    const heroSrcs = [
+      { src: 'images/Set1_1.jpg', pos: 'center 55%'   },
+      { src: 'images/Set2_1.jpg', pos: 'center 20%'   },
+      { src: 'images/Set4_1.jpg', pos: 'center 65%'   },
+      { src: 'images/Set6_1.jpg', pos: 'center center' },
+      { src: 'images/Set9_1.jpg', pos: 'center 65%'   },
+    ];
+
+    const stackEl = document.getElementById('polaroidStack');
+    const dotsEl  = document.getElementById('heroDots');
+    let hIdx = 0, hTimer;
+
+    heroSrcs.forEach(({ src, pos }, i) => {
+      const card = document.createElement('div');
+      card.className = 'polaroid-card' + (i === 0 ? ' active' : '');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'polaroid-img-wrap';
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      img.style.objectPosition = pos;
+
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+      stackEl.appendChild(card);
+
+      const d = document.createElement('div');
+      d.className = 'hero-dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goHero(i);
+      dotsEl.appendChild(d);
+    });
+
+    function goHero(i) {
+      document.querySelectorAll('.polaroid-card')[hIdx].classList.remove('active');
+      document.querySelectorAll('.hero-dot')[hIdx].classList.remove('active');
+      hIdx = i;
+      document.querySelectorAll('.polaroid-card')[hIdx].classList.add('active');
+      document.querySelectorAll('.hero-dot')[hIdx].classList.add('active');
+      clearInterval(hTimer);
+      hTimer = setInterval(() => goHero((hIdx + 1) % heroSrcs.length), 5000);
+    }
+
+    hTimer = setInterval(() => goHero((hIdx + 1) % heroSrcs.length), 5000);
+
+    // ── GALLERY ───────────────────────────────────────────────────
+    // type: 'landscape' spans 2 cols, 'portrait' is 1 col
+    // pos: object-position to keep faces/subjects visible in crop
+    const photos = [
+      { src: 'images/Set1_2.jpg',  type: 'portrait',  pos: 'center 35%'   }, // piggyback laugh — face upper-mid
+      { src: 'images/Set2_2.jpg',  type: 'portrait',  pos: 'center 25%'   }, // B&W bar couple — faces upper
+      { src: 'images/Set2_3.jpg',  type: 'portrait',  pos: 'center 55%'   }, // through window — faces mid
+      { src: 'images/Set3_1.jpg',  type: 'landscape', pos: 'center 40%'   }, // couple lifting by lake — faces mid
+      { src: 'images/Set3_2.jpg',  type: 'portrait',  pos: 'center top'   }, // composite — show dock couple top
+      { src: 'images/Set3_3.jpg',  type: 'portrait',  pos: 'center 30%'   }, // kissing by lake — faces upper
+      { src: 'images/Set4_2.jpg',  type: 'portrait',  pos: 'center 45%'   }, // ocean waves — faces mid
+      { src: 'images/Set4_3.jpg',  type: 'portrait',  pos: 'center 25%'   }, // sitting on sand — faces upper
+      { src: 'images/Set5_2.jpg',  type: 'landscape', pos: 'center 68%'   }, // B&W back-to-back — subjects lower
+      { src: 'images/Set5_3.jpg',  type: 'portrait',  pos: 'center 35%'   }, // studio bouquet — faces upper-mid
+      { src: 'images/Set6_3.jpg',  type: 'portrait',  pos: 'center center' }, // B&W toddler + mom — centered
+      { src: 'images/Set6_4.jpg',  type: 'portrait',  pos: 'center 30%'   }, // family portrait — faces upper
+      { src: 'images/Set7_1.jpg',  type: 'portrait',  pos: 'center center' }, // hands + dog — dog centered
+      { src: 'images/Set7_2.jpg',  type: 'landscape', pos: 'center 35%'   }, // winter couple embrace — faces mid
+      { src: 'images/Set7_3.jpg',  type: 'portrait',  pos: 'center 55%'   }, // winter proposal — subjects lower
+      { src: 'images/Set8_1.jpg',  type: 'portrait',  pos: 'center 35%'   }, // forest couple — faces mid
+      { src: 'images/Set8_2.jpg',  type: 'portrait',  pos: 'center 30%'   }, // walking in snow — faces upper
+      { src: 'images/Set9_2.jpg',  type: 'portrait',  pos: 'center 40%'   }, // B&W dip — faces mid
+      { src: 'images/Set9_3.jpg',  type: 'portrait',  pos: 'center center' }, // bouquet closeup — centered
+      { src: 'images/Set10_1.jpg', type: 'portrait',  pos: 'center 35%'   }, // family + baby — faces upper-mid
+    ];
+
+    const gallery = document.getElementById('gallery');
+
+    photos.forEach(({ src, type, pos }, i) => {
+      const item = document.createElement('div');
+      item.className = `g-item ${type}`;
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.style.objectPosition = pos;
+      img.onerror = function () { this.style.display = 'none'; };
+
+      const hover = document.createElement('div');
+      hover.className = 'g-hover';
+
+      item.appendChild(img);
+      item.appendChild(hover);
+      item.addEventListener('click', () => openLb(i));
+      gallery.appendChild(item);
+    });
+
+    // ── LIGHTBOX ──────────────────────────────────────────────────
+    let lbIdx = 0;
+
+    function openLb(i) {
+      lbIdx = i;
+      document.getElementById('lbImg').src = photos[i].src;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLb() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function navLb(dir) {
+      lbIdx = (lbIdx + dir + photos.length) % photos.length;
+      document.getElementById('lbImg').src = photos[lbIdx].src;
+    }
+
+    document.getElementById('lightbox').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeLb();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key === 'Escape') closeLb();
+      if (e.key === 'ArrowLeft')  navLb(-1);
+      if (e.key === 'ArrowRight') navLb(1);
+    });
+
+    // ── FILM STRIPS ───────────────────────────────────────────────
+    const filmSrcs = [
+      ...photos.map(p => ({ src: p.src, pos: p.pos })),
+      { src: 'images/Set1_1.jpg', pos: 'center 55%'  },
+      { src: 'images/Set2_1.jpg', pos: 'center 20%'  },
+      { src: 'images/Set4_1.jpg', pos: 'center 65%'  },
+      { src: 'images/Set6_1.jpg', pos: 'center center' },
+      { src: 'images/Set9_1.jpg', pos: 'center 65%'  },
+    ];
+
+    function buildFilmStrip(el, srcs) {
+      const doubled = [...srcs, ...srcs]; // duplicate for seamless infinite loop
+      doubled.forEach(({ src, pos }) => {
+        const img = document.createElement('img');
+        img.className = 'film-photo';
+        img.src = src;
+        img.alt = '';
+        img.style.objectPosition = pos;
+        el.appendChild(img);
+      });
+    }
+
+    buildFilmStrip(document.getElementById('filmLeft'),  filmSrcs);
+    buildFilmStrip(document.getElementById('filmRight'), [...filmSrcs].reverse());
+
+    // ── NAV SCROLL ────────────────────────────────────────────────
+    const navEl = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      navEl.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── MOBILE NAV ────────────────────────────────────────────────
+    function toggleNav() {
+      document.getElementById('navOverlay').classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
