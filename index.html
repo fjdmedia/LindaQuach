@@ -172,6 +172,8 @@
     .polaroid-card:nth-child(3) { transform: rotate(-2.5deg) translate(-4px, 4px); z-index: 3; }
     .polaroid-card:nth-child(4) { transform: rotate(2deg)  translate(6px, 6px);   z-index: 4; }
     .polaroid-card:nth-child(5) { transform: rotate(-1deg) translate(2px, -2px);  z-index: 5; }
+    .polaroid-card:nth-child(6) { transform: rotate(-3deg) translate(-8px, 5px);  z-index: 6; }
+    .polaroid-card:nth-child(7) { transform: rotate(1.5deg) translate(4px, -7px); z-index: 7; }
 
     .polaroid-card.active {
       transform: rotate(-0.5deg) !important;
@@ -359,6 +361,30 @@
       text-align: center;
       padding: 72px 92px 48px;
     }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .filter-btn {
+      padding: 7px 20px;
+      font-size: 0.62rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid var(--faint);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s, border-color 0.25s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
     .gallery-grid {
       display: grid;
@@ -634,6 +660,7 @@
     <div class="portfolio-header">
       <div class="section-eyebrow">Work</div>
       <div class="section-title">Portfolio</div>
+      <div class="filter-bar" id="filterBar"></div>
     </div>
     <div class="gallery-grid" id="gallery"></div>
   </section>
@@ -688,34 +715,48 @@
   <div class="film-strip film-right"><div class="film-inner scroll-up" id="filmRight"></div></div>
 
   <script>
-    // ── HERO SLIDESHOW (stacking polaroids) ──────────────────────
-    const heroSrcs = [
-      { src: 'images/Set1_1.jpg', pos: 'center 55%'   },
-      { src: 'images/Set2_1.jpg', pos: 'center 20%'   },
-      { src: 'images/Set4_1.jpg', pos: 'center 65%'   },
-      { src: 'images/Set6_1.jpg', pos: 'center center' },
-      { src: 'images/Set9_1.jpg', pos: 'center 65%'   },
+    // ── DATA ──────────────────────────────────────────────────────
+    const sessions = [
+      { id: 'bandm',    label: 'Brian & Mae',     folder: 'Brian and Mae',   files: ['BandM_1.jpg','BandM_2.jpg','BandM_3.jpg','BandM_4.jpg','BandM_5.jpg'] },
+      { id: 'danda',    label: 'Diego & Andrea',  folder: 'Diego & Andrea',  files: ['DandA_1.jpg','DandA_2.jpg','DandA_3.jpg','DandA_4.jpg','DandA_5.jpg','DandA_6.jpg','DandA_7.jpg','DandA_8.jpg','DandA_9.jpg'] },
+      { id: 'family',   label: 'Family',          folder: 'Family',          files: ['Family_1.jpg','Family_2.jpg','Family_3.jpg'] },
+      { id: 'jandc',    label: 'John & Coleen',   folder: 'John & Coleen',   files: ['JandC_1.jpg','JandC_2.jpg','JandC_3.jpg','JandC_4.jpg','JandC_5.jpg','JandC_6.jpg','JandC_7.jpg','JandC_8.jpg'] },
+      { id: 'nandd',    label: 'Nathan & Denice', folder: 'Nathan & Denice', files: ['NandD_1.jpg','NandD_2.jpg','NandD_3.jpg','NandD_4.jpg','NandD_5.jpg'] },
+      { id: 'nandb',    label: 'Nico & Bianca',   folder: 'Nico & Bianca',   files: ['NandB_1.jpg','NandB_2.jpg','NandB_3.jpg','NandB_4.jpg'] },
+      { id: 'proposal', label: 'Proposal',        folder: 'Proposal',        files: ['Proposal_1.jpg','Proposal_2.jpg','Proposal_3.jpg'] },
     ];
+
+    function imgSrc(s, f) { return `images/${s.folder}/${f}`; }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    const allPhotos = sessions.flatMap(s => s.files.map(f => ({ src: imgSrc(s, f) })));
+
+    // ── HERO POLAROIDS ────────────────────────────────────────────
+    // 1 random pick per session, order reshuffled on every page load
+    const heroPicks = shuffle(sessions.map(s => ({
+      src: imgSrc(s, s.files[Math.floor(Math.random() * s.files.length)])
+    })));
 
     const stackEl = document.getElementById('polaroidStack');
     const dotsEl  = document.getElementById('heroDots');
     let hIdx = 0, hTimer;
 
-    heroSrcs.forEach(({ src, pos }, i) => {
+    heroPicks.forEach(({ src }, i) => {
       const card = document.createElement('div');
       card.className = 'polaroid-card' + (i === 0 ? ' active' : '');
-
       const wrap = document.createElement('div');
       wrap.className = 'polaroid-img-wrap';
-
       const img = document.createElement('img');
-      img.src = src;
-      img.alt = '';
-      img.style.objectPosition = pos;
-
-      wrap.appendChild(img);
-      card.appendChild(wrap);
-      stackEl.appendChild(card);
+      img.src = src; img.alt = '';
+      wrap.appendChild(img); card.appendChild(wrap); stackEl.appendChild(card);
 
       const d = document.createElement('div');
       d.className = 'hero-dot' + (i === 0 ? ' active' : '');
@@ -730,65 +771,61 @@
       document.querySelectorAll('.polaroid-card')[hIdx].classList.add('active');
       document.querySelectorAll('.hero-dot')[hIdx].classList.add('active');
       clearInterval(hTimer);
-      hTimer = setInterval(() => goHero((hIdx + 1) % heroSrcs.length), 5000);
+      hTimer = setInterval(() => goHero((hIdx + 1) % heroPicks.length), 5000);
+    }
+    hTimer = setInterval(() => goHero((hIdx + 1) % heroPicks.length), 5000);
+
+    // ── GALLERY + FILTERS ─────────────────────────────────────────
+    let activeSet = [];
+    const gallery   = document.getElementById('gallery');
+    const filterBar = document.getElementById('filterBar');
+
+    // Build filter buttons
+    [{ id: 'all', label: 'All' }, ...sessions].forEach(({ id, label }) => {
+      const btn = document.createElement('button');
+      btn.className   = 'filter-btn' + (id === 'all' ? ' active' : '');
+      btn.textContent = label;
+      btn.dataset.id  = id;
+      btn.onclick     = () => setFilter(id);
+      filterBar.appendChild(btn);
+    });
+
+    function buildGallery(photos) {
+      activeSet = photos;
+      gallery.innerHTML = '';
+      photos.forEach(({ src }, i) => {
+        const item = document.createElement('div');
+        item.className = 'g-item portrait';
+        const img = document.createElement('img');
+        img.src = src; img.alt = ''; img.loading = 'lazy';
+        img.onerror = function () { this.closest('.g-item').style.display = 'none'; };
+        const hover = document.createElement('div');
+        hover.className = 'g-hover';
+        item.appendChild(img); item.appendChild(hover);
+        item.addEventListener('click', () => openLb(i));
+        gallery.appendChild(item);
+      });
     }
 
-    hTimer = setInterval(() => goHero((hIdx + 1) % heroSrcs.length), 5000);
+    function setFilter(id) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.filter-btn[data-id="${id}"]`).classList.add('active');
+      if (id === 'all') {
+        buildGallery(shuffle(allPhotos).slice(0, 10));
+      } else {
+        const s = sessions.find(s => s.id === id);
+        buildGallery(s.files.map(f => ({ src: imgSrc(s, f) })));
+      }
+    }
 
-    // ── GALLERY ───────────────────────────────────────────────────
-    // type: 'landscape' spans 2 cols, 'portrait' is 1 col
-    // pos: object-position to keep faces/subjects visible in crop
-    const photos = [
-      { src: 'images/Set1_2.jpg',  type: 'portrait',  pos: 'center 35%'   }, // piggyback laugh — face upper-mid
-      { src: 'images/Set2_2.jpg',  type: 'portrait',  pos: 'center 25%'   }, // B&W bar couple — faces upper
-      { src: 'images/Set2_3.jpg',  type: 'portrait',  pos: 'center 55%'   }, // through window — faces mid
-      { src: 'images/Set3_1.jpg',  type: 'landscape', pos: 'center 40%'   }, // couple lifting by lake — faces mid
-      { src: 'images/Set3_2.jpg',  type: 'portrait',  pos: 'center top'   }, // composite — show dock couple top
-      { src: 'images/Set3_3.jpg',  type: 'portrait',  pos: 'center 30%'   }, // kissing by lake — faces upper
-      { src: 'images/Set4_2.jpg',  type: 'portrait',  pos: 'center 45%'   }, // ocean waves — faces mid
-      { src: 'images/Set4_3.jpg',  type: 'portrait',  pos: 'center 25%'   }, // sitting on sand — faces upper
-      { src: 'images/Set5_2.jpg',  type: 'landscape', pos: 'center 68%'   }, // B&W back-to-back — subjects lower
-      { src: 'images/Set5_3.jpg',  type: 'portrait',  pos: 'center 35%'   }, // studio bouquet — faces upper-mid
-      { src: 'images/Set6_3.jpg',  type: 'portrait',  pos: 'center center' }, // B&W toddler + mom — centered
-      { src: 'images/Set6_4.jpg',  type: 'portrait',  pos: 'center 30%'   }, // family portrait — faces upper
-      { src: 'images/Set7_1.jpg',  type: 'portrait',  pos: 'center center' }, // hands + dog — dog centered
-      { src: 'images/Set7_2.jpg',  type: 'landscape', pos: 'center 35%'   }, // winter couple embrace — faces mid
-      { src: 'images/Set7_3.jpg',  type: 'portrait',  pos: 'center 55%'   }, // winter proposal — subjects lower
-      { src: 'images/Set8_1.jpg',  type: 'portrait',  pos: 'center 35%'   }, // forest couple — faces mid
-      { src: 'images/Set8_2.jpg',  type: 'portrait',  pos: 'center 30%'   }, // walking in snow — faces upper
-      { src: 'images/Set9_2.jpg',  type: 'portrait',  pos: 'center 40%'   }, // B&W dip — faces mid
-      { src: 'images/Set9_3.jpg',  type: 'portrait',  pos: 'center center' }, // bouquet closeup — centered
-      { src: 'images/Set10_1.jpg', type: 'portrait',  pos: 'center 35%'   }, // family + baby — faces upper-mid
-    ];
-
-    const gallery = document.getElementById('gallery');
-
-    photos.forEach(({ src, type, pos }, i) => {
-      const item = document.createElement('div');
-      item.className = `g-item ${type}`;
-
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = '';
-      img.loading = 'lazy';
-      img.style.objectPosition = pos;
-      img.onerror = function () { this.style.display = 'none'; };
-
-      const hover = document.createElement('div');
-      hover.className = 'g-hover';
-
-      item.appendChild(img);
-      item.appendChild(hover);
-      item.addEventListener('click', () => openLb(i));
-      gallery.appendChild(item);
-    });
+    setFilter('all');
 
     // ── LIGHTBOX ──────────────────────────────────────────────────
     let lbIdx = 0;
 
     function openLb(i) {
       lbIdx = i;
-      document.getElementById('lbImg').src = photos[i].src;
+      document.getElementById('lbImg').src = activeSet[i].src;
       document.getElementById('lightbox').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -799,8 +836,8 @@
     }
 
     function navLb(dir) {
-      lbIdx = (lbIdx + dir + photos.length) % photos.length;
-      document.getElementById('lbImg').src = photos[lbIdx].src;
+      lbIdx = (lbIdx + dir + activeSet.length) % activeSet.length;
+      document.getElementById('lbImg').src = activeSet[lbIdx].src;
     }
 
     document.getElementById('lightbox').addEventListener('click', e => {
@@ -809,33 +846,22 @@
 
     document.addEventListener('keydown', e => {
       if (!document.getElementById('lightbox').classList.contains('open')) return;
-      if (e.key === 'Escape') closeLb();
-      if (e.key === 'ArrowLeft')  navLb(-1);
-      if (e.key === 'ArrowRight') navLb(1);
+      if (e.key === 'Escape')      closeLb();
+      if (e.key === 'ArrowLeft')   navLb(-1);
+      if (e.key === 'ArrowRight')  navLb(1);
     });
 
     // ── FILM STRIPS ───────────────────────────────────────────────
-    const filmSrcs = [
-      ...photos.map(p => ({ src: p.src, pos: p.pos })),
-      { src: 'images/Set1_1.jpg', pos: 'center 55%'  },
-      { src: 'images/Set2_1.jpg', pos: 'center 20%'  },
-      { src: 'images/Set4_1.jpg', pos: 'center 65%'  },
-      { src: 'images/Set6_1.jpg', pos: 'center center' },
-      { src: 'images/Set9_1.jpg', pos: 'center 65%'  },
-    ];
-
     function buildFilmStrip(el, srcs) {
-      const doubled = [...srcs, ...srcs]; // duplicate for seamless infinite loop
-      doubled.forEach(({ src, pos }) => {
+      const doubled = [...srcs, ...srcs];
+      doubled.forEach(({ src }) => {
         const img = document.createElement('img');
-        img.className = 'film-photo';
-        img.src = src;
-        img.alt = '';
-        img.style.objectPosition = pos;
+        img.className = 'film-photo'; img.src = src; img.alt = '';
         el.appendChild(img);
       });
     }
 
+    const filmSrcs = shuffle(allPhotos);
     buildFilmStrip(document.getElementById('filmLeft'),  filmSrcs);
     buildFilmStrip(document.getElementById('filmRight'), [...filmSrcs].reverse());
 
