@@ -271,7 +271,7 @@
     .film-strip {
       position: fixed;
       top: 0;
-      width: 76px;
+      width: 54px;
       height: 100vh;
       background: #0c0a08;
       overflow: hidden;
@@ -284,10 +284,10 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
-      padding: 5px 15px;
+      padding: 5px;
     }
-    .film-inner.scroll-down { animation: filmDown 50s linear infinite; }
-    .film-inner.scroll-up   { animation: filmUp   50s linear infinite; }
+    .film-inner.scroll-down { animation: filmDown 110s linear infinite; }
+    .film-inner.scroll-up   { animation: filmUp   110s linear infinite; }
 
     @keyframes filmDown {
       from { transform: translateY(0); }
@@ -298,24 +298,6 @@
       to   { transform: translateY(0); }
     }
 
-    /* Sprocket holes — overlaid on both edges of each strip */
-    .film-strip::before,
-    .film-strip::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      width: 13px;
-      height: 100%;
-      z-index: 5;
-      pointer-events: none;
-      background-color: #0c0a08;
-      background-image: radial-gradient(ellipse 7px 9px at 50% 50%, transparent 99%, #0c0a08 100%);
-      background-size: 13px 20px;
-      background-repeat: repeat-y;
-      background-position: 0 6px;
-    }
-    .film-strip::before { left: 2px; }
-    .film-strip::after  { right: 2px; }
 
     .film-photo {
       width: 100%;
@@ -596,16 +578,7 @@
     /* ── RESPONSIVE ────────────────────────────────── */
     @media (max-width: 768px) {
       .film-strip { width: 44px; }
-      .film-inner { gap: 3px; padding: 3px 10px; }
-      .film-strip::before,
-      .film-strip::after {
-        width: 9px;
-        background-image: radial-gradient(ellipse 5px 6px at 50% 50%, transparent 99%, #0c0a08 100%);
-        background-size: 9px 14px;
-        background-position: 0 4px;
-      }
-      .film-strip::before { left: 1px; }
-      .film-strip::after  { right: 1px; }
+      .film-inner { gap: 3px; padding: 3px; }
 
       .nav { padding: 18px 48px; }
       .nav.scrolled { padding: 13px 48px; }
