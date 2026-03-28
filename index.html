@@ -762,9 +762,7 @@
     const dotEls = heroPicks.map((_, i) => {
       const d = document.createElement('div');
       d.className = 'hero-dot';
-      d.style.opacity = '0';
-      d.style.transition = 'opacity 0.4s';
-      d.onclick = () => { if (i < addedCount) goHero(i); };
+      d.onclick = () => goHero(i);
       dotsEl.appendChild(d);
       return d;
     });
@@ -776,14 +774,13 @@
     }
 
     function addNextCard() {
-      const i = addedCount;
-      stackEl.appendChild(cardEls[i]);
-      dotEls[i].style.opacity = '1';
+      stackEl.appendChild(cardEls[addedCount]);
       addedCount++;
-      activateCard(i);
     }
 
     function goHero(i) {
+      // Add all cards up to i if not yet in the DOM
+      while (addedCount <= i) addNextCard();
       activateCard(i);
       clearInterval(hTimer);
       hTimer = setInterval(nextTick, 5000);
@@ -791,8 +788,9 @@
 
     function nextTick() {
       if (addedCount < heroPicks.length) {
-        // Stack is still building — add the next card
+        // Stack is still building — add the next card and activate it
         addNextCard();
+        activateCard(addedCount - 1);
       } else {
         // All cards in — cycle through the stack
         activateCard((activeIdx + 1) % heroPicks.length);
@@ -803,6 +801,7 @@
 
     // Start with 1 card, then let the timer build the rest
     addNextCard();
+    activateCard(0);
     hTimer = setInterval(nextTick, 5000);
 
     // ── GALLERY + FILTERS ─────────────────────────────────────────
