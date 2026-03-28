@@ -747,33 +747,63 @@
 
     const stackEl = document.getElementById('polaroidStack');
     const dotsEl  = document.getElementById('heroDots');
-    let hIdx = 0, hTimer;
+    let addedCount = 0, activeIdx = 0, hTimer;
 
-    heroPicks.forEach(({ src }, i) => {
+    // Pre-build all card + dot elements (not yet in DOM)
+    const cardEls = heroPicks.map(({ src }) => {
       const card = document.createElement('div');
-      card.className = 'polaroid-card' + (i === 0 ? ' active' : '');
-      const wrap = document.createElement('div');
-      wrap.className = 'polaroid-img-wrap';
-      const img = document.createElement('img');
-      img.src = src; img.alt = '';
-      wrap.appendChild(img); card.appendChild(wrap); stackEl.appendChild(card);
-
-      const d = document.createElement('div');
-      d.className = 'hero-dot' + (i === 0 ? ' active' : '');
-      d.onclick = () => goHero(i);
-      dotsEl.appendChild(d);
+      card.className = 'polaroid-card';
+      const wrap = document.createElement('div'); wrap.className = 'polaroid-img-wrap';
+      const img = document.createElement('img'); img.src = src; img.alt = '';
+      wrap.appendChild(img); card.appendChild(wrap);
+      return card;
     });
 
-    function goHero(i) {
-      document.querySelectorAll('.polaroid-card')[hIdx].classList.remove('active');
-      document.querySelectorAll('.hero-dot')[hIdx].classList.remove('active');
-      hIdx = i;
-      document.querySelectorAll('.polaroid-card')[hIdx].classList.add('active');
-      document.querySelectorAll('.hero-dot')[hIdx].classList.add('active');
-      clearInterval(hTimer);
-      hTimer = setInterval(() => goHero((hIdx + 1) % heroPicks.length), 5000);
+    const dotEls = heroPicks.map((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'hero-dot';
+      d.style.opacity = '0';
+      d.style.transition = 'opacity 0.4s';
+      d.onclick = () => { if (i < addedCount) goHero(i); };
+      dotsEl.appendChild(d);
+      return d;
+    });
+
+    function activateCard(i) {
+      cardEls.forEach((c, j) => c.classList.toggle('active', j === i));
+      dotEls.forEach((d, j)  => d.classList.toggle('active', j === i));
+      activeIdx = i;
     }
-    hTimer = setInterval(() => goHero((hIdx + 1) % heroPicks.length), 5000);
+
+    function addNextCard() {
+      const i = addedCount;
+      stackEl.appendChild(cardEls[i]);
+      dotEls[i].style.opacity = '1';
+      addedCount++;
+      activateCard(i);
+    }
+
+    function goHero(i) {
+      activateCard(i);
+      clearInterval(hTimer);
+      hTimer = setInterval(nextTick, 5000);
+    }
+
+    function nextTick() {
+      if (addedCount < heroPicks.length) {
+        // Stack is still building — add the next card
+        addNextCard();
+      } else {
+        // All cards in — cycle through the stack
+        activateCard((activeIdx + 1) % heroPicks.length);
+      }
+      clearInterval(hTimer);
+      hTimer = setInterval(nextTick, 5000);
+    }
+
+    // Start with 1 card, then let the timer build the rest
+    addNextCard();
+    hTimer = setInterval(nextTick, 5000);
 
     // ── GALLERY + FILTERS ─────────────────────────────────────────
     let activeSet = [];
