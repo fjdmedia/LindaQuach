@@ -7,6 +7,96 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
   <style>
+    /* ── PASSWORD GATE ── */
+    #pw-gate {
+      position: fixed;
+      inset: 0;
+      background: #faf6f1;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      font-family: 'Jost', sans-serif;
+    }
+    #pw-gate .pw-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 28px;
+      color: #1c1612;
+      letter-spacing: 0.04em;
+    }
+    #pw-gate .pw-sub {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(28,22,18,0.4);
+      margin-top: -18px;
+    }
+    #pw-gate .pw-divider {
+      width: 36px;
+      height: 1px;
+      background: #9a7c60;
+      opacity: 0.45;
+    }
+    #pw-gate input {
+      border: none;
+      border-bottom: 1px solid rgba(28,22,18,0.2);
+      background: transparent;
+      text-align: center;
+      font-family: 'Jost', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      color: #1c1612;
+      padding: 8px 0;
+      width: 200px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #pw-gate input::placeholder { color: rgba(28,22,18,0.3); letter-spacing: 0.18em; }
+    #pw-gate input:focus { border-bottom-color: #9a7c60; }
+    #pw-gate .pw-err {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: #b06060;
+      opacity: 0;
+      transition: opacity 0.2s;
+      margin-top: -16px;
+    }
+    #pw-gate .pw-err.show { opacity: 1; }
+  </style>
+  <script>
+    (function() {
+      // Run before page renders — inject gate immediately
+      document.addEventListener('DOMContentLoaded', function() {
+        var gate = document.getElementById('pw-gate');
+        var input = document.getElementById('pw-input');
+        var err   = document.getElementById('pw-err');
+
+        input.focus();
+
+        function tryPassword() {
+          if (input.value.trim().toLowerCase() === 'lingling') {
+            gate.style.transition = 'opacity 0.5s ease';
+            gate.style.opacity = '0';
+            setTimeout(function() { gate.remove(); }, 500);
+          } else {
+            err.classList.add('show');
+            input.value = '';
+            setTimeout(function() { err.classList.remove('show'); }, 2000);
+          }
+        }
+
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') tryPassword();
+        });
+      });
+    })();
+  </script>
+  <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -617,6 +707,15 @@
   </style>
 </head>
 <body>
+
+<!-- ── PASSWORD GATE ── -->
+<div id="pw-gate">
+  <div class="pw-logo">Linda Quach Photography</div>
+  <div class="pw-sub">Client Preview</div>
+  <div class="pw-divider"></div>
+  <input id="pw-input" type="password" placeholder="Enter password" autocomplete="off"/>
+  <div id="pw-err" class="pw-err">Incorrect password</div>
+</div>
 
   <!-- NAV -->
   <nav class="nav" id="nav">
