@@ -4,9 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Linda Quach Photography</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
   <style>
+    /* Design System: Photography | Fonts: Cormorant Garamond + Jost | Palette: #1c1612 #9a7c60 #7a5c3e #faf6f1 #f0e8dd */
+    /* Spatial: masonry gallery, about photo bleeds -160px, contact goes DARK | Texture: grain, hero glow, section gradients | Memorable: cinematic hero entrance + dark contact flip */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:  #faf6f1;
+      --cream2: #f0e8dd;
+      --text:   #1c1612;
+      --muted:  rgba(28,22,18,0.62);
+      --faint:  rgba(28,22,18,0.12);
+      --accent: #9a7c60;
+      --accent-deep: #7a5c3e;
+      --dark:   #1a1510;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+    }
+
     /* ── PASSWORD GATE ── */
     #pw-gate {
       position: fixed;
@@ -47,7 +85,7 @@
       background: transparent;
       text-align: center;
       font-family: 'Jost', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 300;
       letter-spacing: 0.18em;
       color: #1c1612;
@@ -67,59 +105,8 @@
       margin-top: -16px;
     }
     #pw-gate .pw-err.show { opacity: 1; }
-  </style>
-  <script>
-    (function() {
-      // Run before page renders — inject gate immediately
-      document.addEventListener('DOMContentLoaded', function() {
-        var gate = document.getElementById('pw-gate');
-        var input = document.getElementById('pw-input');
-        var err   = document.getElementById('pw-err');
 
-        input.focus();
-
-        function tryPassword() {
-          if (input.value.trim().toLowerCase() === 'lingling') {
-            gate.style.transition = 'opacity 0.5s ease';
-            gate.style.opacity = '0';
-            setTimeout(function() { gate.remove(); }, 500);
-          } else {
-            err.classList.add('show');
-            input.value = '';
-            setTimeout(function() { err.classList.remove('show'); }, 2000);
-          }
-        }
-
-        input.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') tryPassword();
-        });
-      });
-    })();
-  </script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap');
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --cream:  #faf6f1;
-      --cream2: #f0e8dd;
-      --text:   #1c1612;
-      --muted:  rgba(28,22,18,0.52);
-      --faint:  rgba(28,22,18,0.12);
-      --accent: #9a7c60;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--cream);
-      color: var(--text);
-      font-family: 'Jost', sans-serif;
-      font-weight: 300;
-    }
-
-    /* ── NAV ───────────────────────────────────────── */
+    /* ── NAV ── */
     .nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -128,14 +115,17 @@
       align-items: center;
       justify-content: space-between;
       padding: 26px 92px;
-      transition: background 0.45s, padding 0.35s, border-color 0.45s;
+      transition: background 0.45s, padding 0.35s, border-color 0.45s, box-shadow 0.45s;
       border-bottom: 1px solid transparent;
     }
 
     .nav.scrolled {
-      background: var(--cream);
+      background: rgba(250,246,241,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 16px 92px;
       border-bottom-color: var(--faint);
+      box-shadow: 0 2px 20px rgba(28,22,18,0.04);
     }
 
     .nav-logo {
@@ -146,16 +136,15 @@
       color: var(--text);
       text-decoration: none;
       letter-spacing: 0.03em;
-      transition: color 0.45s;
     }
 
-    .nav-links {
+    .nav-center {
       display: flex;
       gap: 40px;
       list-style: none;
     }
 
-    .nav-links a {
+    .nav-center a {
       font-size: 0.68rem;
       font-weight: 400;
       letter-spacing: 0.18em;
@@ -164,7 +153,24 @@
       text-decoration: none;
       transition: color 0.3s;
     }
-    .nav-links a:hover { color: var(--accent) !important; }
+    .nav-center a:hover { color: var(--accent); }
+
+    .nav-cta {
+      display: inline-block;
+      padding: 9px 24px;
+      font-size: 0.62rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--cream);
+      background: var(--accent-deep);
+      border: 1px solid var(--accent-deep);
+      transition: background 0.3s, color 0.3s, transform 0.2s;
+      cursor: pointer;
+    }
+    .nav-cta:hover { background: transparent; color: var(--accent-deep); transform: translateY(-1px); }
 
     .nav-toggle {
       display: none;
@@ -180,10 +186,8 @@
       width: 24px;
       height: 1.5px;
       background: var(--text);
-      transition: background 0.45s;
     }
 
-    /* Mobile overlay */
     .nav-overlay {
       display: none;
       position: fixed;
@@ -222,7 +226,18 @@
     }
     .overlay-close:hover { opacity: 1; }
 
-    /* ── HERO ──────────────────────────────────────── */
+    .overlay-cta-btn {
+      font-size: 1.2rem !important;
+      font-family: 'Jost', sans-serif !important;
+      font-style: normal !important;
+      letter-spacing: 0.2em !important;
+      text-transform: uppercase;
+      margin-top: 12px;
+      padding: 14px 36px;
+      border: 1px solid rgba(28,22,18,0.3);
+    }
+
+    /* ── HERO ── */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -230,6 +245,32 @@
       background: var(--cream);
       padding: 120px 92px 80px;
       gap: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Warm radial glow — larger, more visible */
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(154,124,96,0.12) 0%, rgba(154,124,96,0.04) 40%, transparent 65%);
+      top: 45%;
+      right: 10%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Diagonal warm sweep */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(155deg, transparent 40%, rgba(154,124,96,0.05) 100%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .hero-left {
@@ -238,6 +279,8 @@
       flex-direction: column;
       align-items: center;
       gap: 24px;
+      position: relative;
+      z-index: 1;
     }
 
     .polaroid-stack {
@@ -258,7 +301,6 @@
       will-change: transform;
     }
 
-    /* Resting rotations — each card has a unique angle when not active */
     .polaroid-card:nth-child(1) { transform: rotate(-4deg) translate(-6px, 8px);  z-index: 1; }
     .polaroid-card:nth-child(2) { transform: rotate(3deg)  translate(8px, -5px);  z-index: 2; }
     .polaroid-card:nth-child(3) { transform: rotate(-2.5deg) translate(-4px, 4px); z-index: 3; }
@@ -310,6 +352,8 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      position: relative;
+      z-index: 1;
     }
 
     .hero-eyebrow {
@@ -323,12 +367,13 @@
 
     .hero-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3.4rem, 7.5vw, 8rem);
+      font-size: clamp(3.8rem, 8vw, 9rem);
       font-weight: 300;
       font-style: italic;
-      line-height: 1;
+      line-height: 0.95;
       color: var(--text);
-      margin-bottom: 10px;
+      margin-bottom: 14px;
+      clip-path: inset(0 0 0 0);
     }
 
     .hero-sub-title {
@@ -337,29 +382,62 @@
       font-weight: 300;
       letter-spacing: 0.18em;
       color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .hero-style {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0.06em;
       margin-bottom: 44px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      align-items: center;
     }
 
     .hero-cta {
       display: inline-block;
-      align-self: flex-start;
-      padding: 12px 32px;
-      border: 1px solid rgba(28,22,18,0.35);
-      color: var(--text);
+      padding: 13px 34px;
       font-size: 0.68rem;
       font-family: 'Jost', sans-serif;
       font-weight: 400;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: background 0.3s, border-color 0.3s;
-    }
-    .hero-cta:hover {
-      background: var(--cream2);
-      border-color: var(--text);
+      transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
+      cursor: pointer;
     }
 
-    /* ── FILM STRIPS ────────────────────────────────── */
+    .hero-cta-primary {
+      background: var(--accent-deep);
+      color: var(--cream);
+      border: 1px solid var(--accent-deep);
+    }
+    .hero-cta-primary:hover {
+      background: var(--text);
+      border-color: var(--text);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(28,22,18,0.15);
+    }
+
+    .hero-cta-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(28,22,18,0.3);
+    }
+    .hero-cta-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ── FILM STRIPS ── */
     .film-strip {
       position: fixed;
       top: 0;
@@ -390,7 +468,6 @@
       to   { transform: translateY(0); }
     }
 
-
     .film-photo {
       width: 100%;
       aspect-ratio: 2 / 3;
@@ -400,10 +477,12 @@
       flex-shrink: 0;
     }
 
-    /* ── INTRO ─────────────────────────────────────── */
+    /* ── INTRO ── */
     .intro {
       padding: 100px 92px;
       text-align: center;
+      position: relative;
+      background: linear-gradient(180deg, var(--cream) 0%, var(--cream2) 100%);
     }
 
     .rule {
@@ -429,7 +508,7 @@
       letter-spacing: 0.1em;
     }
 
-    /* ── SECTION LABELS ────────────────────────────── */
+    /* ── SECTION LABELS ── */
     .section-eyebrow {
       font-size: 0.6rem;
       font-weight: 400;
@@ -447,8 +526,11 @@
       line-height: 1.2;
     }
 
-    /* ── PORTFOLIO ─────────────────────────────────── */
-    .portfolio { padding-bottom: 100px; }
+    /* ── PORTFOLIO ── */
+    .portfolio {
+      padding-bottom: 100px;
+      background: var(--cream2);
+    }
 
     .portfolio-header {
       text-align: center;
@@ -464,7 +546,7 @@
     }
 
     .filter-btn {
-      padding: 7px 20px;
+      padding: 8px 22px;
       font-size: 0.62rem;
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -474,53 +556,63 @@
       background: transparent;
       color: var(--muted);
       cursor: pointer;
-      transition: background 0.25s, color 0.25s, border-color 0.25s;
+      transition: all 0.25s;
     }
-    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+    .filter-btn.active { background: var(--accent-deep); color: #fff; border-color: var(--accent-deep); }
 
+    /* MASONRY GALLERY — editorial layout with varying sizes */
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      column-count: 4;
+      column-gap: 8px;
       padding: 0 92px;
     }
 
     .g-item {
+      break-inside: avoid;
+      margin-bottom: 8px;
       overflow: hidden;
       cursor: pointer;
       position: relative;
-      background: var(--cream2);
+      background: var(--cream);
     }
-
-    .g-item.portrait  { aspect-ratio: 3 / 4; }
-    .g-item.landscape { aspect-ratio: 16 / 9; grid-column: span 2; }
 
     .g-item img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
       display: block;
-      transition: transform 0.6s ease, filter 0.4s ease;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
     }
     .g-item:hover img {
-      transform: scale(1.05);
-      filter: brightness(0.72);
+      transform: scale(1.06) rotate(0.5deg);
+      filter: brightness(0.7);
     }
 
     .g-hover {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 55%);
+      background: linear-gradient(to top, rgba(26,21,16,0.6) 0%, rgba(26,21,16,0.15) 40%, transparent 65%);
       opacity: 0;
-      transition: opacity 0.35s;
+      transition: opacity 0.4s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
     }
     .g-item:hover .g-hover { opacity: 1; }
 
-    /* ── ABOUT ─────────────────────────────────────── */
+    .g-hover-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: rgba(250,246,241,0.95);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ABOUT ── */
     .about {
-      background: var(--cream2);
-      padding: 100px 92px;
+      background: var(--cream);
+      padding: 120px 92px 100px;
+      position: relative;
     }
 
     .about-inner {
@@ -528,14 +620,19 @@
       margin: 0 auto;
       display: flex;
       gap: 72px;
-      align-items: center;
+      align-items: flex-start;
+      position: relative;
     }
 
     .about-photo {
-      flex: 0 0 400px;
+      flex: 0 0 420px;
       aspect-ratio: 3 / 4;
       overflow: hidden;
-      background: var(--cream);
+      background: var(--cream2);
+      position: relative;
+      margin-top: -140px;
+      box-shadow: 0 32px 72px rgba(28,22,18,0.16);
+      z-index: 2;
     }
     .about-photo img {
       width: 100%;
@@ -544,108 +641,207 @@
       display: block;
     }
 
-    .about-body { flex: 1; }
+    /* Gold accent line */
+    .about-photo::after {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: -20px;
+      width: 2px;
+      height: 100px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    /* Decorative corner bracket on photo */
+    .about-photo::before {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      right: -12px;
+      width: 60px;
+      height: 60px;
+      border-right: 1.5px solid var(--accent);
+      border-bottom: 1.5px solid var(--accent);
+      opacity: 0.35;
+      z-index: 3;
+    }
+
+    .about-body {
+      flex: 1;
+      padding-top: 20px;
+    }
 
     .about-heading {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-size: clamp(2.2rem, 3.5vw, 3rem);
       font-style: italic;
       font-weight: 300;
       line-height: 1.2;
-      margin: 10px 0 24px;
+      margin: 10px 0 28px;
     }
 
     .about-p {
       font-size: 0.92rem;
       color: var(--muted);
-      line-height: 1.85;
-      margin-bottom: 16px;
+      line-height: 1.9;
+      margin-bottom: 18px;
+    }
+
+    .about-pullquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.3rem, 2vw, 1.7rem);
+      color: var(--accent);
+      line-height: 1.5;
+      margin: 12px 0 8px;
+      padding-left: 20px;
+      border-left: 2px solid var(--accent);
+      opacity: 0.85;
     }
 
     .btn {
       display: inline-block;
       margin-top: 20px;
-      padding: 12px 30px;
+      padding: 13px 32px;
       font-size: 0.68rem;
       font-family: 'Jost', sans-serif;
       font-weight: 400;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: background 0.3s, color 0.3s, border-color 0.3s;
+      transition: all 0.3s;
+      cursor: pointer;
     }
 
     .btn-dark {
-      background: var(--text);
+      background: var(--accent-deep);
       color: var(--cream);
-      border: 1px solid var(--text);
+      border: 1px solid var(--accent-deep);
     }
-    .btn-dark:hover { background: transparent; color: var(--text); }
+    .btn-dark:hover { background: var(--text); border-color: var(--text); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(28,22,18,0.12); }
 
     .btn-outline {
       background: transparent;
       color: var(--text);
-      border: 1px solid rgba(28,22,18,0.35);
+      border: 1px solid rgba(28,22,18,0.3);
     }
-    .btn-outline:hover { border-color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-    /* ── CONTACT ───────────────────────────────────── */
+    /* ── CONTACT (DARK SECTION) ── */
     .contact {
-      padding: 112px 92px;
+      background: var(--dark);
+      padding: 120px 92px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    .contact-inner { max-width: 580px; margin: 0 auto; }
+    /* Warm glow behind content */
+    .contact::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(154,124,96,0.12) 0%, rgba(154,124,96,0.03) 50%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* Subtle grid texture */
+    .contact::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(154,124,96,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(154,124,96,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .contact-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact .section-eyebrow {
+      color: var(--accent);
+      opacity: 0.7;
+    }
 
     .contact-heading {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
       font-style: italic;
       font-weight: 300;
       line-height: 1.2;
-      margin: 10px 0 18px;
+      margin: 10px 0 20px;
+      color: var(--cream);
     }
 
     .contact-sub {
-      font-size: 0.86rem;
-      color: var(--muted);
+      font-size: 0.88rem;
+      color: rgba(250,246,241,0.5);
       line-height: 1.75;
-      margin-bottom: 40px;
+      margin-bottom: 44px;
     }
 
     .contact-btns {
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
     }
 
-    /* ── FOOTER ────────────────────────────────────── */
+    .contact .btn-outline {
+      color: var(--cream);
+      border-color: rgba(250,246,241,0.25);
+    }
+    .contact .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    .contact .btn-dark {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--dark);
+    }
+    .contact .btn-dark:hover { background: var(--cream); border-color: var(--cream); }
+
+    /* ── FOOTER ── */
     footer {
-      border-top: 1px solid var(--faint);
+      background: var(--dark);
+      border-top: 1px solid rgba(154,124,96,0.1);
       padding: 28px 92px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 0.68rem;
-      color: var(--muted);
+      color: rgba(250,246,241,0.35);
       letter-spacing: 0.06em;
     }
 
-    footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-    footer a:hover { color: var(--text); }
+    footer a { color: rgba(250,246,241,0.35); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--accent); }
 
-    /* ── LIGHTBOX ──────────────────────────────────── */
+    /* ── LIGHTBOX ── */
     .lightbox {
-      display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.93);
+      background: rgba(0,0,0,0.95);
       z-index: 200;
+      display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
     }
-    .lightbox.open { display: flex; }
+    .lightbox.open { opacity: 1; pointer-events: auto; }
 
     .lb-img { max-width: 90vw; max-height: 90vh; object-fit: contain; display: block; }
 
@@ -667,48 +863,245 @@
     .lb-prev { left: 12px; }
     .lb-next { right: 12px; }
 
-    /* ── RESPONSIVE ────────────────────────────────── */
-    @media (max-width: 768px) {
-      .film-strip { width: 44px; }
-      .film-inner { gap: 3px; padding: 3px; }
+    /* ── STICKY MOBILE CTA ── */
+    .sticky-cta {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 90;
+      padding: 12px 20px;
+      background: rgba(250,246,241,0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--faint);
+      box-shadow: 0 -4px 20px rgba(28,22,18,0.08);
+    }
 
-      .nav { padding: 18px 48px; }
-      .nav.scrolled { padding: 13px 48px; }
-      .nav-links { display: none; }
+    .sticky-cta a {
+      display: block;
+      text-align: center;
+      padding: 14px 0;
+      font-size: 0.72rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--cream);
+      background: var(--accent-deep);
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .sticky-cta a:hover { background: var(--text); }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--accent);
+      z-index: 9999;
+      width: 0%;
+      transition: none;
+    }
+
+    /* ── SCROLL HINT ── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    .scroll-hint span {
+      font-size: 0.58rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scroll-hint-line {
+      width: 1px;
+      height: 28px;
+      background: var(--accent);
+      opacity: 0.5;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(1); opacity: 0.5; }
+      50% { transform: scaleY(0.4); opacity: 0.2; }
+    }
+
+    /* ── NAV ACTIVE LINK ── */
+    .nav-center a.active {
+      color: var(--accent-deep);
+    }
+
+    /* ── LIGHTBOX UPGRADE ── */
+    .lb-img {
+      transition: opacity 0.25s ease;
+    }
+    .lb-img.switching {
+      opacity: 0.3;
+    }
+
+    .lb-counter {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.45);
+      z-index: 201;
+    }
+
+    /* ── BACK TO TOP ── */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--cream);
+      border: 1px solid var(--faint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 89;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s, background 0.2s;
+      box-shadow: 0 4px 16px rgba(28,22,18,0.08);
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .back-to-top:hover {
+      background: var(--accent-deep);
+      border-color: var(--accent-deep);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover svg { stroke: var(--cream); }
+    .back-to-top svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--text);
+      stroke-width: 1.5;
+      fill: none;
+      transition: stroke 0.2s;
+    }
+
+    /* ── GALLERY CROSSFADE ── */
+    .gallery-grid.fading {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .gallery-grid.entering {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    /* ── FOCUS VISIBLE ── */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .film-strip { display: none; }
+
+      .nav { padding: 18px 24px; }
+      .nav.scrolled { padding: 13px 24px; }
+      .nav-center { display: none; }
+      .nav-cta { display: none; }
       .nav-toggle { display: flex; }
 
-      .hero { flex-direction: column; padding: 100px 48px 60px; gap: 16px; text-align: center; }
+      .hero { flex-direction: column; padding: 100px 24px 60px; gap: 20px; text-align: center; }
+      .hero::before { width: 400px; height: 400px; right: 50%; transform: translate(50%, -50%); }
       .hero-right { align-items: center; }
-      .hero-cta { align-self: auto; }
-      .polaroid-stack { width: 220px; height: 355px; }
+      .hero-ctas { justify-content: center; flex-wrap: wrap; }
+      .hero-cta { padding: 12px 26px; }
+      .polaroid-stack { width: 240px; height: 380px; }
 
-      .intro { padding: 72px 48px; }
+      .intro { padding: 72px 24px; }
 
-      .portfolio-header { padding: 56px 48px 36px; }
+      .portfolio-header { padding: 56px 24px 36px; }
 
       .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 3px; padding: 0 48px;
+        column-count: 2;
+        column-gap: 4px;
+        padding: 0 24px;
       }
-      .g-item.landscape { grid-column: span 2; aspect-ratio: 4/3; }
+      .g-item { margin-bottom: 4px; }
 
-      .about { padding: 90px 56px; }
-      .about-inner { flex-direction: column; gap: 36px; }
-      .about-photo { flex: none; width: 100%; }
-      .about-heading { font-size: 2rem; margin-bottom: 20px; }
-      .about-p { font-size: 0.9rem; line-height: 1.9; margin-bottom: 18px; }
+      .about { padding: 60px 24px 80px; }
+      .about-inner { flex-direction: column; gap: 32px; }
+      .about-photo { flex: none; width: 100%; margin-top: 0; }
+      .about-photo::after { display: none; }
+      .about-photo::before { display: none; }
 
-      .contact { padding: 90px 56px; }
+      .contact { padding: 80px 24px; }
 
-      footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px 48px; }
+      footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px 24px 80px; }
 
       .lb-nav { display: none; }
+
+      .sticky-cta.visible { display: block; }
+      .back-to-top { display: none; }
+      .scroll-hint { bottom: 20px; }
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .film-inner { animation: none !important; }
     }
   </style>
+  <script>
+    (function() {
+      document.addEventListener('DOMContentLoaded', function() {
+        var gate = document.getElementById('pw-gate');
+        var input = document.getElementById('pw-input');
+        var err   = document.getElementById('pw-err');
+        input.focus();
+        function tryPassword() {
+          if (input.value.trim().toLowerCase() === 'lingling') {
+            gate.style.transition = 'opacity 0.5s ease';
+            gate.style.opacity = '0';
+            setTimeout(function() { gate.remove(); }, 500);
+          } else {
+            err.classList.add('show');
+            input.value = '';
+            setTimeout(function() { err.classList.remove('show'); }, 2000);
+          }
+        }
+        input.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryPassword(); });
+      });
+    })();
+  </script>
 </head>
 <body>
 
-<!-- ── PASSWORD GATE ── -->
+<!-- PASSWORD GATE -->
 <div id="pw-gate">
   <div class="pw-logo">Private Preview</div>
   <div class="pw-sub">Password required</div>
@@ -717,14 +1110,18 @@
   <div id="pw-err" class="pw-err">Incorrect password</div>
 </div>
 
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
   <!-- NAV -->
   <nav class="nav" id="nav">
     <a href="#" class="nav-logo">Linda Quach</a>
-    <ul class="nav-links">
+    <ul class="nav-center">
       <li><a href="#about">About</a></li>
       <li><a href="#portfolio">Portfolio</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <a href="#contact" class="nav-cta">Book a Session</a>
     <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -732,23 +1129,32 @@
 
   <!-- Mobile Nav Overlay -->
   <div class="nav-overlay" id="navOverlay">
-    <button class="overlay-close" onclick="toggleNav()">×</button>
+    <button class="overlay-close" onclick="toggleNav()" aria-label="Close menu">&times;</button>
     <a href="#about"     onclick="toggleNav()">About</a>
     <a href="#portfolio" onclick="toggleNav()">Portfolio</a>
     <a href="#contact"   onclick="toggleNav()">Contact</a>
+    <a href="#contact" onclick="toggleNav()" class="overlay-cta-btn">Book a Session</a>
   </div>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-left">
+    <div class="hero-left" id="heroLeft">
       <div class="polaroid-stack" id="polaroidStack"></div>
       <div class="hero-dots" id="heroDots"></div>
     </div>
-    <div class="hero-right">
+    <div class="hero-right" id="heroRight">
       <div class="hero-eyebrow">Winnipeg, Manitoba</div>
-      <div class="hero-name">Linda Quach</div>
+      <h1 class="hero-name">Linda<br>Quach</h1>
       <div class="hero-sub-title">Photography</div>
-      <a href="#contact" class="hero-cta">Book a Session</a>
+      <div class="hero-style">Warm. Editorial. Real.</div>
+      <div class="hero-ctas">
+        <a href="#contact" class="hero-cta hero-cta-primary">Book a Session</a>
+        <a href="#portfolio" class="hero-cta hero-cta-secondary">View Portfolio</a>
+      </div>
+    </div>
+    <div class="scroll-hint" id="scrollHint">
+      <span>Scroll</span>
+      <div class="scroll-hint-line"></div>
     </div>
   </section>
 
@@ -756,14 +1162,14 @@
   <section class="intro">
     <div class="rule"></div>
     <p class="intro-quote">"a gal and her camera, documenting love everywhere."</p>
-    <p class="intro-detail">Weddings &nbsp;·&nbsp; Engagements &nbsp;·&nbsp; Couples</p>
+    <p class="intro-detail">Weddings &nbsp;&middot;&nbsp; Engagements &nbsp;&middot;&nbsp; Couples</p>
   </section>
 
   <!-- PORTFOLIO -->
   <section class="portfolio" id="portfolio">
     <div class="portfolio-header">
       <div class="section-eyebrow">Work</div>
-      <div class="section-title">Portfolio</div>
+      <h2 class="section-title">Portfolio</h2>
       <div class="filter-bar" id="filterBar"></div>
     </div>
     <div class="gallery-grid" id="gallery"></div>
@@ -773,24 +1179,24 @@
   <section class="about" id="about">
     <div class="about-inner">
       <div class="about-photo">
-        <img src="images/about_placeholder.png" alt="Linda Quach">
+        <img src="images/about_placeholder.png" alt="Linda Quach, Winnipeg photographer">
       </div>
       <div class="about-body">
         <div class="section-eyebrow">About</div>
-        <div class="about-heading">About Me.</div>
-        <p class="about-p">Hi, I'm Linda — a photographer based in Winnipeg, MB with a love for capturing real, unscripted moments. I believe the most beautiful photos aren't posed — they're felt.</p>
-        <p class="about-p">From proposals on the beach to snow-covered engagements in the city, I show up with my camera and a whole lot of heart. My style blends documentary and editorial — quietly observant, but always intentional.</p>
-        <p class="about-p">Every love story deserves to be told beautifully. Let's tell yours.</p>
-        <a href="#contact" class="btn btn-dark">Let's Connect</a>
+        <h2 class="about-heading">Hi, I'm Linda.</h2>
+        <p class="about-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras vehicula, mi eget laoreet venenatis, sem dolor auctor nisi, at pretium eros libero vel arcu.</p>
+        <p class="about-p">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec sodales sagittis magna, sed consequat leo ultricies nec. Nulla facilisi cras fermentum odio eu feugiat.</p>
+        <p class="about-pullquote">The quiet moments are the ones worth keeping.</p>
+        <a href="#contact" class="btn btn-dark">Let's Tell Yours</a>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT -->
+  <!-- CONTACT (DARK) -->
   <section class="contact" id="contact">
     <div class="contact-inner">
       <div class="section-eyebrow">Get in Touch</div>
-      <div class="contact-heading">Let's document<br>your love story.</div>
+      <h2 class="contact-heading">Let's document<br>your love story.</h2>
       <p class="contact-sub">I'd love to hear about your day. Reach out on Instagram or send me an email — I can't wait to connect with you.</p>
       <div class="contact-btns">
         <a href="https://www.instagram.com/lindaquach.photo" target="_blank" class="btn btn-outline">Instagram</a>
@@ -801,18 +1207,29 @@
 
   <!-- FOOTER -->
   <footer>
-    <span>© 2026 Linda Quach Photography</span>
-    <span>Winnipeg, MB &nbsp;·&nbsp; <a href="https://www.instagram.com/lindaquach.photo" target="_blank">@lindaquach.photo</a></span>
-    <p style="font-size:0.65rem; opacity:0.45; margin-top:0.5rem;">Powered by <a href="https://fjdmedia.github.io/FJMedia" target="_blank" style="color: inherit; text-decoration: none; font-weight: 600;">FJMedia</a></p>
+    <span>&copy; 2026 Linda Quach Photography</span>
+    <span>Winnipeg, MB &nbsp;&middot;&nbsp; <a href="https://www.instagram.com/lindaquach.photo" target="_blank">@lindaquach.photo</a></span>
+    <p style="font-size:0.65rem; opacity:0.6; margin-top:0.5rem;">Powered by <a href="https://fjdmedia.github.io/FJMedia" target="_blank" style="color: inherit; text-decoration: none; font-weight: 500;">FJMedia</a></p>
   </footer>
+
+  <!-- STICKY MOBILE CTA -->
+  <div class="sticky-cta" id="stickyCta">
+    <a href="#contact">Book a Session</a>
+  </div>
 
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox">
-    <button class="lb-close" onclick="closeLb()">×</button>
-    <button class="lb-nav lb-prev" onclick="navLb(-1)">‹</button>
-    <img class="lb-img" id="lbImg" src="" alt="">
-    <button class="lb-nav lb-next" onclick="navLb(1)">›</button>
+    <button class="lb-close" onclick="closeLb()" aria-label="Close lightbox">&times;</button>
+    <button class="lb-nav lb-prev" onclick="navLb(-1)" aria-label="Previous">&lsaquo;</button>
+    <img class="lb-img" id="lbImg" src="" alt="Gallery photo">
+    <button class="lb-nav lb-next" onclick="navLb(1)" aria-label="Next">&rsaquo;</button>
+    <div class="lb-counter" id="lbCounter"></div>
   </div>
+
+  <!-- BACK TO TOP -->
+  <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+    <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
 
   <!-- FILM STRIPS -->
   <div class="film-strip film-left"><div class="film-inner scroll-down" id="filmLeft"></div></div>
@@ -821,7 +1238,6 @@
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    // ── DATA ──────────────────────────────────────────────────────
     const sessions = [
       { id: 'bandm',    label: 'Brian & Mae',     folder: 'Brian and Mae',   files: ['BandM_1.jpg','BandM_2.jpg','BandM_3.jpg','BandM_4.jpg','BandM_5.jpg'] },
       { id: 'danda',    label: 'Diego & Andrea',  folder: 'Diego & Andrea',  files: ['DandA_1.jpg','DandA_2.jpg','DandA_3.jpg','DandA_4.jpg','DandA_5.jpg','DandA_6.jpg','DandA_7.jpg','DandA_8.jpg','DandA_9.jpg'] },
@@ -843,10 +1259,9 @@
       return a;
     }
 
-    const allPhotos = sessions.flatMap(s => s.files.map(f => ({ src: imgSrc(s, f) })));
+    const allPhotos = sessions.flatMap(s => s.files.map(f => ({ src: imgSrc(s, f), session: s.label })));
 
-    // ── HERO POLAROIDS ────────────────────────────────────────────
-    // 1 random pick per session, order reshuffled on every page load
+    // ── HERO POLAROIDS ──
     const heroPicks = shuffle(sessions.map(s => ({
       src: imgSrc(s, s.files[Math.floor(Math.random() * s.files.length)])
     })));
@@ -855,12 +1270,11 @@
     const dotsEl  = document.getElementById('heroDots');
     let addedCount = 0, activeIdx = 0, hTimer;
 
-    // Pre-build all card + dot elements (not yet in DOM)
     const cardEls = heroPicks.map(({ src }) => {
       const card = document.createElement('div');
       card.className = 'polaroid-card';
       const wrap = document.createElement('div'); wrap.className = 'polaroid-img-wrap';
-      const img = document.createElement('img'); img.src = src; img.alt = '';
+      const img = document.createElement('img'); img.src = src; img.alt = 'Wedding and couples photography by Linda Quach';
       wrap.appendChild(img); card.appendChild(wrap);
       return card;
     });
@@ -885,7 +1299,6 @@
     }
 
     function goHero(i) {
-      // Add all cards up to i if not yet in the DOM
       while (addedCount <= i) addNextCard();
       activateCard(i);
       clearInterval(hTimer);
@@ -894,28 +1307,24 @@
 
     function nextTick() {
       if (addedCount < heroPicks.length) {
-        // Stack is still building — add the next card and activate it
         addNextCard();
         activateCard(addedCount - 1);
       } else {
-        // All cards in — cycle through the stack
         activateCard((activeIdx + 1) % heroPicks.length);
       }
       clearInterval(hTimer);
       hTimer = setInterval(nextTick, 5000);
     }
 
-    // Start with 1 card, then let the timer build the rest
     addNextCard();
     activateCard(0);
     hTimer = setInterval(nextTick, 5000);
 
-    // ── GALLERY + FILTERS ─────────────────────────────────────────
+    // ── GALLERY + FILTERS ──
     let activeSet = [];
     const gallery   = document.getElementById('gallery');
     const filterBar = document.getElementById('filterBar');
 
-    // Build filter buttons
     [{ id: 'all', label: 'All' }, ...sessions].forEach(({ id, label }) => {
       const btn = document.createElement('button');
       btn.className   = 'filter-btn' + (id === 'all' ? ' active' : '');
@@ -928,14 +1337,22 @@
     function buildGallery(photos) {
       activeSet = photos;
       gallery.innerHTML = '';
-      photos.forEach(({ src }, i) => {
+      photos.forEach(({ src, session }, i) => {
         const item = document.createElement('div');
-        item.className = 'g-item portrait';
+        item.className = 'g-item';
         const img = document.createElement('img');
-        img.src = src; img.alt = ''; img.loading = 'lazy';
+        img.src = src;
+        img.alt = session ? session + ' session' : 'Photography by Linda Quach';
+        img.loading = 'lazy';
         img.onerror = function () { this.closest('.g-item').style.display = 'none'; };
         const hover = document.createElement('div');
         hover.className = 'g-hover';
+        if (session) {
+          const label = document.createElement('span');
+          label.className = 'g-hover-label';
+          label.textContent = session;
+          hover.appendChild(label);
+        }
         item.appendChild(img); item.appendChild(hover);
         item.addEventListener('click', () => openLb(i));
         gallery.appendChild(item);
@@ -944,87 +1361,115 @@
     }
 
     function animateGallery() {
-      // Kill any previous gallery row triggers
       ScrollTrigger.getAll()
-        .filter(t => t.vars.id && t.vars.id.startsWith('gallery-row-'))
+        .filter(t => t.vars.id && t.vars.id.startsWith('gallery-'))
         .forEach(t => t.kill());
 
       const items = Array.from(document.querySelectorAll('.g-item'));
       if (!items.length) return;
 
-      const cols = window.innerWidth <= 768 ? 2 : 4;
+      gsap.set(items, { opacity: 0, y: 30 });
 
-      // Set all items to invisible start state
-      gsap.set(items, { opacity: 0, y: 28 });
-
-      // Animate row by row
-      for (let i = 0; i < items.length; i += cols) {
-        const row = items.slice(i, i + cols);
-        gsap.to(row, {
+      items.forEach((item, i) => {
+        gsap.to(item, {
           scrollTrigger: {
-            id: `gallery-row-${i}`,
-            trigger: row[0],
-            start: 'top 88%',
+            id: `gallery-${i}`,
+            trigger: item,
+            start: 'top 90%',
+            once: true,
           },
           opacity: 1,
           y: 0,
-          duration: 0.55,
-          stagger: 0.08,
+          duration: 0.5,
+          delay: (i % 4) * 0.08,
           ease: 'power1.out',
         });
-      }
+      });
     }
 
     function setFilter(id) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       document.querySelector(`.filter-btn[data-id="${id}"]`).classList.add('active');
-      if (id === 'all') {
-        buildGallery(shuffle(allPhotos).slice(0, 10));
-      } else {
-        const s = sessions.find(s => s.id === id);
-        buildGallery(s.files.map(f => ({ src: imgSrc(s, f) })));
-      }
+
+      // Crossfade out
+      gallery.classList.remove('entering');
+      gallery.classList.add('fading');
+
+      setTimeout(() => {
+        if (id === 'all') {
+          buildGallery(shuffle(allPhotos).slice(0, 12));
+        } else {
+          const s = sessions.find(s => s.id === id);
+          buildGallery(s.files.map(f => ({ src: imgSrc(s, f), session: s.label })));
+        }
+        // Crossfade in
+        gallery.classList.remove('fading');
+        requestAnimationFrame(() => gallery.classList.add('entering'));
+      }, 260);
     }
 
     setFilter('all');
+    gallery.classList.add('entering');
 
-    // ── LIGHTBOX ──────────────────────────────────────────────────
+    // ── LIGHTBOX (upgraded) ──
     let lbIdx = 0;
+    const lbImg = document.getElementById('lbImg');
+    const lbCounter = document.getElementById('lbCounter');
+    const lightboxEl = document.getElementById('lightbox');
+
+    function updateCounter() {
+      lbCounter.textContent = (lbIdx + 1) + ' / ' + activeSet.length;
+    }
 
     function openLb(i) {
       lbIdx = i;
-      document.getElementById('lbImg').src = activeSet[i].src;
-      document.getElementById('lightbox').classList.add('open');
+      lbImg.src = activeSet[i].src;
+      updateCounter();
+      lightboxEl.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
 
     function closeLb() {
-      document.getElementById('lightbox').classList.remove('open');
+      lightboxEl.classList.remove('open');
       document.body.style.overflow = '';
     }
 
     function navLb(dir) {
-      lbIdx = (lbIdx + dir + activeSet.length) % activeSet.length;
-      document.getElementById('lbImg').src = activeSet[lbIdx].src;
+      lbImg.classList.add('switching');
+      setTimeout(() => {
+        lbIdx = (lbIdx + dir + activeSet.length) % activeSet.length;
+        lbImg.src = activeSet[lbIdx].src;
+        updateCounter();
+        lbImg.classList.remove('switching');
+      }, 150);
     }
 
-    document.getElementById('lightbox').addEventListener('click', e => {
+    lightboxEl.addEventListener('click', e => {
       if (e.target === e.currentTarget) closeLb();
     });
 
     document.addEventListener('keydown', e => {
-      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (!lightboxEl.classList.contains('open')) return;
       if (e.key === 'Escape')      closeLb();
       if (e.key === 'ArrowLeft')   navLb(-1);
       if (e.key === 'ArrowRight')  navLb(1);
     });
 
-    // ── FILM STRIPS ───────────────────────────────────────────────
+    // Touch swipe on lightbox
+    let lbTouchX = 0;
+    lightboxEl.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+    lightboxEl.addEventListener('touchend', e => {
+      const diff = e.changedTouches[0].clientX - lbTouchX;
+      if (Math.abs(diff) > 50) navLb(diff > 0 ? -1 : 1);
+    });
+
+    // ── FILM STRIPS ──
     function buildFilmStrip(el, srcs) {
-      const doubled = [...srcs, ...srcs];
+      const reduced = srcs.slice(0, 18);
+      const doubled = [...reduced, ...reduced];
       doubled.forEach(({ src }) => {
         const img = document.createElement('img');
-        img.className = 'film-photo'; img.src = src; img.alt = '';
+        img.className = 'film-photo'; img.src = src; img.alt = ''; img.loading = 'lazy';
         el.appendChild(img);
       });
     }
@@ -1033,33 +1478,104 @@
     buildFilmStrip(document.getElementById('filmLeft'),  filmSrcs);
     buildFilmStrip(document.getElementById('filmRight'), [...filmSrcs].reverse());
 
-    // ── NAV SCROLL ────────────────────────────────────────────────
+    // ── NAV ──
     const navEl = document.getElementById('nav');
+    const progressBar = document.getElementById('scrollProgress');
+    const backToTop = document.getElementById('backToTop');
+
     window.addEventListener('scroll', () => {
       navEl.classList.toggle('scrolled', window.scrollY > 60);
+
+      // Scroll progress
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = total > 0 ? (scrolled / total * 100) + '%' : '0%';
+
+      // Back to top
+      backToTop.classList.toggle('visible', scrolled > 600);
     });
 
-    // ── MOBILE NAV ────────────────────────────────────────────────
     function toggleNav() {
       document.getElementById('navOverlay').classList.toggle('open');
+      document.body.style.overflow = document.getElementById('navOverlay').classList.contains('open') ? 'hidden' : '';
     }
 
-    // ── GSAP SECTION REVEALS ──────────────────────────────────────
-    // Intro strip
-    gsap.from('.rule', { scrollTrigger: { trigger: '.intro', start: 'top 85%' }, scaleX: 0, transformOrigin: 'left', duration: 0.5, ease: 'power1.out' });
-    gsap.from('.intro-quote', { scrollTrigger: { trigger: '.intro', start: 'top 82%' }, opacity: 0, y: 22, duration: 0.7, ease: 'power1.out', delay: 0.15 });
-    gsap.from('.intro-detail', { scrollTrigger: { trigger: '.intro', start: 'top 82%' }, opacity: 0, y: 15, duration: 0.6, ease: 'power1.out', delay: 0.3 });
+    // ── STICKY MOBILE CTA ──
+    const stickyCta = document.getElementById('stickyCta');
+    if (window.innerWidth <= 768) {
+      ScrollTrigger.create({
+        trigger: '.hero',
+        start: 'bottom top',
+        onEnter: () => stickyCta.classList.add('visible'),
+        onLeaveBack: () => stickyCta.classList.remove('visible'),
+      });
+    }
 
-    // Portfolio header
-    gsap.from(['.portfolio-header .section-eyebrow', '.portfolio-header .section-title'], { scrollTrigger: { trigger: '.portfolio-header', start: 'top 85%' }, opacity: 0, y: 20, duration: 0.6, stagger: 0.12, ease: 'power1.out' });
-    gsap.from('.filter-bar', { scrollTrigger: { trigger: '.filter-bar', start: 'top 90%' }, opacity: 0, y: 15, duration: 0.5, ease: 'power1.out' });
+    // ── NAV ACTIVE SECTION ──
+    const navLinks = document.querySelectorAll('.nav-center a');
+    ['about', 'portfolio', 'contact'].forEach(id => {
+      const section = document.getElementById(id);
+      if (!section) return;
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 40%',
+        end: 'bottom 40%',
+        onEnter: () => setActiveNav(id),
+        onEnterBack: () => setActiveNav(id),
+        onLeave: () => clearActiveNav(id),
+        onLeaveBack: () => clearActiveNav(id),
+      });
+    });
 
-    // About — slides from opposite sides
-    gsap.from('.about-photo', { scrollTrigger: { trigger: '.about-inner', start: 'top 80%' }, opacity: 0, x: -40, duration: 0.7, ease: 'power1.out' });
-    gsap.from('.about-body',  { scrollTrigger: { trigger: '.about-inner', start: 'top 80%' }, opacity: 0, x: 40,  duration: 0.7, ease: 'power1.out' });
+    function setActiveNav(id) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+      });
+    }
+    function clearActiveNav() {
+      navLinks.forEach(a => a.classList.remove('active'));
+    }
+
+    // ── SCROLL HINT ──
+    const scrollHint = document.getElementById('scrollHint');
+    gsap.to(scrollHint, { opacity: 1, duration: 0.6, delay: 2.2, ease: 'power1.out' });
+    ScrollTrigger.create({
+      trigger: '.intro',
+      start: 'top 90%',
+      onEnter: () => gsap.to(scrollHint, { opacity: 0, duration: 0.3 }),
+    });
+
+    // ── HERO ENTRANCE (CINEMATIC) ──
+    gsap.set('#heroLeft', { opacity: 0, x: -60 });
+    gsap.set('#heroRight .hero-eyebrow', { opacity: 0, y: 20 });
+    gsap.set('#heroRight .hero-name', { opacity: 0, y: 40 });
+    gsap.set('#heroRight .hero-sub-title', { opacity: 0, y: 20 });
+    gsap.set('#heroRight .hero-style', { opacity: 0, y: 15 });
+    gsap.set('#heroRight .hero-ctas', { opacity: 0, y: 20 });
+
+    const heroTl = gsap.timeline({ delay: 0.4 });
+    heroTl
+      .to('#heroLeft',                    { opacity: 1, x: 0, duration: 0.9, ease: 'power2.out' })
+      .to('#heroRight .hero-eyebrow',     { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.5')
+      .to('#heroRight .hero-name',        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.35')
+      .to('#heroRight .hero-sub-title',   { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.3')
+      .to('#heroRight .hero-style',       { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.25')
+      .to('#heroRight .hero-ctas',        { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.2');
+
+    // ── SECTION REVEALS ──
+    gsap.from('.rule', { scrollTrigger: { trigger: '.intro', start: 'top 85%', once: true }, scaleX: 0, transformOrigin: 'left', duration: 0.5, ease: 'power1.out' });
+    gsap.from('.intro-quote', { scrollTrigger: { trigger: '.intro', start: 'top 82%', once: true }, opacity: 0, y: 22, duration: 0.7, ease: 'power1.out', delay: 0.15 });
+    gsap.from('.intro-detail', { scrollTrigger: { trigger: '.intro', start: 'top 82%', once: true }, opacity: 0, y: 15, duration: 0.6, ease: 'power1.out', delay: 0.3 });
+
+    gsap.from(['.portfolio-header .section-eyebrow', '.portfolio-header .section-title'], { scrollTrigger: { trigger: '.portfolio-header', start: 'top 85%', once: true }, opacity: 0, y: 20, duration: 0.6, stagger: 0.12, ease: 'power1.out' });
+    gsap.from('.filter-bar', { scrollTrigger: { trigger: '.filter-bar', start: 'top 90%', once: true }, opacity: 0, y: 15, duration: 0.5, ease: 'power1.out' });
+
+    // About
+    gsap.from('.about-photo', { scrollTrigger: { trigger: '.about-inner', start: 'top 85%', once: true }, opacity: 0, x: -50, duration: 0.8, ease: 'power2.out' });
+    gsap.from('.about-body',  { scrollTrigger: { trigger: '.about-inner', start: 'top 75%', once: true }, opacity: 0, x: 40,  duration: 0.7, ease: 'power1.out', delay: 0.2 });
 
     // Contact
-    gsap.from('.contact-inner', { scrollTrigger: { trigger: '.contact', start: 'top 82%' }, opacity: 0, y: 25, duration: 0.65, ease: 'power1.out' });
+    gsap.from('.contact-inner', { scrollTrigger: { trigger: '.contact', start: 'top 80%', once: true }, opacity: 0, y: 30, duration: 0.7, ease: 'power1.out' });
   </script>
 
 </body>
