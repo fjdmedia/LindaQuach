@@ -3,8 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Linda Quach Photography</title>
+  <title>Linda Quach Photography | Winnipeg Wedding & Couples Photographer</title>
+  <meta name="description" content="Warm, editorial wedding and couples photography in Winnipeg, MB. View the portfolio and book your session with Linda Quach." />
+  <meta property="og:title" content="Linda Quach Photography | Winnipeg" />
+  <meta property="og:description" content="Warm, editorial wedding and couples photography in Winnipeg. View the portfolio and book your session." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fjdmedia.github.io/LindaQuach/" />
+  <meta property="og:image" content="https://fjdmedia.github.io/LindaQuach/images/Brian%20and%20Mae/BandM_2.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Linda Quach Photography | Winnipeg" />
+  <meta name="twitter:description" content="Warm, editorial wedding and couples photography in Winnipeg. View the portfolio and book your session." />
+  <meta name="twitter:image" content="https://fjdmedia.github.io/LindaQuach/images/Brian%20and%20Mae/BandM_2.jpg" />
+  <link rel="canonical" href="https://fjdmedia.github.io/LindaQuach/" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23faf6f1'/%3E%3Ctext x='16' y='22' font-size='14' font-weight='300' font-family='serif' text-anchor='middle' fill='%237a5c3e'%3ELQ%3C/text%3E%3C/svg%3E" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <!-- LocalBusiness Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Photographer",
+    "name": "Linda Quach Photography",
+    "description": "Warm, editorial wedding and couples photography in Winnipeg, MB.",
+    "url": "https://fjdmedia.github.io/LindaQuach/",
+    "image": "https://fjdmedia.github.io/LindaQuach/images/Brian%20and%20Mae/BandM_2.jpg",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Winnipeg",
+      "addressRegion": "MB",
+      "addressCountry": "CA"
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Winnipeg"
+    },
+    "sameAs": [
+      "https://www.instagram.com/lindaquach.photo"
+    ]
+  }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
   <style>
@@ -373,7 +410,16 @@
       line-height: 0.95;
       color: var(--text);
       margin-bottom: 14px;
-      clip-path: inset(0 0 0 0);
+    }
+
+    /* Clip-path reveal mask for each line */
+    .hero-name-line {
+      display: block;
+      overflow: hidden;
+    }
+    .hero-name-line span {
+      display: inline-block;
+      transform: translateY(110%);
     }
 
     .hero-sub-title {
@@ -390,7 +436,7 @@
       font-size: clamp(0.95rem, 1.5vw, 1.2rem);
       font-style: italic;
       font-weight: 400;
-      color: var(--accent);
+      color: var(--accent-deep);
       letter-spacing: 0.06em;
       margin-bottom: 44px;
     }
@@ -514,7 +560,7 @@
       font-weight: 400;
       letter-spacing: 0.26em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-deep);
       margin-bottom: 10px;
     }
 
@@ -693,12 +739,11 @@
       font-style: italic;
       font-weight: 400;
       font-size: clamp(1.3rem, 2vw, 1.7rem);
-      color: var(--accent);
+      color: var(--accent-deep);
       line-height: 1.5;
       margin: 12px 0 8px;
       padding-left: 20px;
       border-left: 2px solid var(--accent);
-      opacity: 0.85;
     }
 
     .btn {
@@ -772,7 +817,6 @@
 
     .contact .section-eyebrow {
       color: var(--accent);
-      opacity: 0.7;
     }
 
     .contact-heading {
@@ -1049,6 +1093,11 @@
       }
       .g-item { margin-bottom: 4px; }
 
+      .photo-strip { height: 40vh; min-height: 280px; }
+      .photo-strip-img { background-attachment: scroll; }
+      .lookbook-grid { grid-template-columns: repeat(2, 1fr); padding: 0 24px; gap: 6px; }
+      .lookbook-card:nth-child(1) { grid-column: span 2; grid-row: span 1; aspect-ratio: 16 / 9; }
+      .lookbook-card-overlay { padding: 16px; }
       .about { padding: 60px 24px 80px; }
       .about-inner { flex-direction: column; gap: 32px; }
       .about-photo { flex: none; width: 100%; margin-top: 0; }
@@ -1066,14 +1115,192 @@
       .scroll-hint { bottom: 20px; }
     }
 
+    /* ── CINEMATIC PHOTO STRIP ── */
+    .photo-strip {
+      position: relative;
+      height: 55vh;
+      min-height: 360px;
+      overflow: hidden;
+    }
+    .photo-strip-img {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center 35%;
+      background-attachment: fixed;
+    }
+    .photo-strip-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(26,21,16,0.55) 0%, rgba(26,21,16,0.7) 100%);
+    }
+    .photo-strip-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .photo-strip-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--cream);
+      max-width: 600px;
+      opacity: 0.92;
+    }
+    .photo-strip-rule {
+      width: 36px;
+      height: 1px;
+      background: var(--accent);
+      margin: 24px auto;
+      opacity: 0.6;
+    }
+    .photo-strip-attr {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(250,246,241,0.45);
+    }
+
+    /* ── LOOKBOOK COVERS ── */
+    .lookbook-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 0 92px;
+    }
+    .lookbook-card {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--cream);
+    }
+    .lookbook-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
+    }
+    .lookbook-card:hover img {
+      transform: scale(1.05);
+      filter: brightness(0.6);
+    }
+    .lookbook-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,21,16,0.7) 0%, rgba(26,21,16,0.15) 45%, transparent 70%);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 28px;
+      transition: opacity 0.4s ease;
+    }
+    .lookbook-card-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--cream);
+      letter-spacing: 0.02em;
+    }
+    .lookbook-card-count {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(250,246,241,0.5);
+      margin-top: 4px;
+    }
+    .lookbook-card:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+
+    /* ── SIGNATURE SVG ── */
+    .about-signature {
+      margin: 28px 0 8px;
+      display: block;
+    }
+    .about-signature path {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.6;
+    }
+
+    /* ── SECTION DIVIDERS ── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 0;
+      height: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .section-divider-line {
+      width: 36px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.3;
+    }
+    .section-divider-dot {
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--accent);
+      opacity: 0.35;
+      transform: rotate(45deg);
+    }
+
+    /* ── CONTACT PHOTO TEXTURE ── */
+    .contact-texture {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.04;
+      filter: blur(2px) grayscale(0.3);
+      pointer-events: none;
+    }
+
+    /* ── FOIC FALLBACK — if GSAP CDN fails, hero becomes visible after 3s ── */
+    @keyframes foic-fallback { to { visibility: visible; opacity: 1; } }
+    @keyframes foic-reveal { to { transform: translateY(0); } }
+    #heroLeft, #heroRight .hero-eyebrow, #heroRight .hero-name,
+    #heroRight .hero-sub-title, #heroRight .hero-style, #heroRight .hero-ctas {
+      animation: foic-fallback 0.6s ease 3s both;
+    }
+    .hero-name-line span {
+      animation: foic-reveal 0.6s ease 3s both;
+    }
+
     /* ── REDUCED MOTION ── */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
       }
       .film-inner { animation: none !important; }
+      #heroLeft, #heroRight .hero-eyebrow, #heroRight .hero-name,
+      #heroRight .hero-sub-title, #heroRight .hero-style, #heroRight .hero-ctas {
+        opacity: 1 !important;
+      }
+      .hero-name-line span {
+        transform: translateY(0) !important;
+      }
     }
   </style>
   <script>
@@ -1095,6 +1322,7 @@
           }
         }
         input.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryPassword(); });
+        if (window.location.search.includes('nogate')) { gate.remove(); }
       });
     })();
   </script>
@@ -1144,7 +1372,7 @@
     </div>
     <div class="hero-right" id="heroRight">
       <div class="hero-eyebrow">Winnipeg, Manitoba</div>
-      <h1 class="hero-name">Linda<br>Quach</h1>
+      <h1 class="hero-name"><span class="hero-name-line"><span>Linda</span></span><span class="hero-name-line"><span>Quach</span></span></h1>
       <div class="hero-sub-title">Photography</div>
       <div class="hero-style">Warm. Editorial. Real.</div>
       <div class="hero-ctas">
@@ -1165,6 +1393,13 @@
     <p class="intro-detail">Weddings &nbsp;&middot;&nbsp; Engagements &nbsp;&middot;&nbsp; Couples</p>
   </section>
 
+  <!-- SECTION DIVIDER -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-dot"></div>
+    <div class="section-divider-line"></div>
+  </div>
+
   <!-- PORTFOLIO -->
   <section class="portfolio" id="portfolio">
     <div class="portfolio-header">
@@ -1172,21 +1407,43 @@
       <h2 class="section-title">Portfolio</h2>
       <div class="filter-bar" id="filterBar"></div>
     </div>
+    <div class="lookbook-grid" id="lookbook"></div>
     <div class="gallery-grid" id="gallery"></div>
   </section>
+
+  <!-- CINEMATIC PHOTO STRIP -->
+  <section class="photo-strip">
+    <div class="photo-strip-img" id="photoStripImg"></div>
+    <div class="photo-strip-overlay"></div>
+    <div class="photo-strip-content">
+      <p class="photo-strip-quote">"Every love story deserves to be told in its truest, most beautiful light."</p>
+      <div class="photo-strip-rule"></div>
+      <span class="photo-strip-attr">Linda Quach Photography</span>
+    </div>
+  </section>
+
+  <!-- SECTION DIVIDER -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-dot"></div>
+    <div class="section-divider-line"></div>
+  </div>
 
   <!-- ABOUT -->
   <section class="about" id="about">
     <div class="about-inner">
       <div class="about-photo">
-        <img src="images/about_placeholder.png" alt="Linda Quach, Winnipeg photographer">
+        <img src="../images/about_placeholder.png" alt="Linda Quach, Winnipeg photographer">
       </div>
       <div class="about-body">
         <div class="section-eyebrow">About</div>
         <h2 class="about-heading">Hi, I'm Linda.</h2>
-        <p class="about-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras vehicula, mi eget laoreet venenatis, sem dolor auctor nisi, at pretium eros libero vel arcu.</p>
-        <p class="about-p">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec sodales sagittis magna, sed consequat leo ultricies nec. Nulla facilisi cras fermentum odio eu feugiat.</p>
+        <p class="about-p">I'm a Winnipeg-based photographer who believes the best photos happen when you forget the camera is there. I focus on the in-between moments — the laugh before the kiss, the look across the room, the quiet pause that says everything.</p>
+        <p class="about-p">My style is warm, editorial, and real. No stiff posing, no over-editing. Just you two, your story, and golden hour light. Whether it's an engagement session, a wedding day, or a family milestone — I'm here to document what matters most.</p>
         <p class="about-pullquote">The quiet moments are the ones worth keeping.</p>
+        <svg class="about-signature" viewBox="0 0 200 50" width="160" height="40" aria-hidden="true">
+          <path id="signaturePath" d="M10,38 C18,10 28,8 35,22 C42,36 48,38 55,28 C62,18 65,16 72,20 C80,25 82,34 90,28 C98,22 100,12 108,18 C116,24 118,36 128,30 C138,24 142,14 150,18 C158,22 162,32 170,26 C175,22 178,16 185,20"/>
+        </svg>
         <a href="#contact" class="btn btn-dark">Let's Tell Yours</a>
       </div>
     </div>
@@ -1194,6 +1451,7 @@
 
   <!-- CONTACT (DARK) -->
   <section class="contact" id="contact">
+    <div class="contact-texture" id="contactTexture"></div>
     <div class="contact-inner">
       <div class="section-eyebrow">Get in Touch</div>
       <h2 class="contact-heading">Let's document<br>your love story.</h2>
@@ -1237,6 +1495,7 @@
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const sessions = [
       { id: 'bandm',    label: 'Brian & Mae',     folder: 'Brian and Mae',   files: ['BandM_1.jpg','BandM_2.jpg','BandM_3.jpg','BandM_4.jpg','BandM_5.jpg'] },
@@ -1248,7 +1507,7 @@
       { id: 'proposal', label: 'Proposal',        folder: 'Proposal',        files: ['Proposal_1.jpg','Proposal_2.jpg','Proposal_3.jpg'] },
     ];
 
-    function imgSrc(s, f) { return `images/${s.folder}/${f}`; }
+    function imgSrc(s, f) { return `../images/${s.folder}/${f}`; }
 
     function shuffle(arr) {
       const a = [...arr];
@@ -1361,12 +1620,17 @@
     }
 
     function animateGallery() {
+      const items = Array.from(document.querySelectorAll('.g-item'));
+      if (!items.length) return;
+
+      if (reducedMotion) {
+        gsap.set(items, { opacity: 1, y: 0 });
+        return;
+      }
+
       ScrollTrigger.getAll()
         .filter(t => t.vars.id && t.vars.id.startsWith('gallery-'))
         .forEach(t => t.kill());
-
-      const items = Array.from(document.querySelectorAll('.g-item'));
-      if (!items.length) return;
 
       gsap.set(items, { opacity: 0, y: 30 });
 
@@ -1387,29 +1651,84 @@
       });
     }
 
+    const lookbookEl = document.getElementById('lookbook');
+
+    function buildLookbook() {
+      lookbookEl.innerHTML = '';
+      activeSet = [];
+      const shuffled = shuffle(sessions);
+      shuffled.forEach((s) => {
+        const coverFile = s.files[Math.floor(Math.random() * s.files.length)];
+        const card = document.createElement('div');
+        card.className = 'lookbook-card';
+        const img = document.createElement('img');
+        img.src = imgSrc(s, coverFile);
+        img.alt = s.label + ' — photography by Linda Quach';
+        img.loading = 'lazy';
+        const overlay = document.createElement('div');
+        overlay.className = 'lookbook-card-overlay';
+        const label = document.createElement('span');
+        label.className = 'lookbook-card-label';
+        label.textContent = s.label;
+        const count = document.createElement('span');
+        count.className = 'lookbook-card-count';
+        count.textContent = s.files.length + ' photos';
+        overlay.appendChild(label);
+        overlay.appendChild(count);
+        card.appendChild(img);
+        card.appendChild(overlay);
+        card.addEventListener('click', () => setFilter(s.id));
+        lookbookEl.appendChild(card);
+      });
+      // Animate lookbook cards
+      if (!reducedMotion) {
+        const cards = Array.from(lookbookEl.querySelectorAll('.lookbook-card'));
+        gsap.set(cards, { opacity: 0, y: 30 });
+        cards.forEach((card, i) => {
+          gsap.to(card, {
+            scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+            opacity: 1, y: 0, duration: 0.5, delay: i * 0.08, ease: 'power1.out'
+          });
+        });
+      }
+    }
+
     function setFilter(id) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       document.querySelector(`.filter-btn[data-id="${id}"]`).classList.add('active');
 
-      // Crossfade out
-      gallery.classList.remove('entering');
-      gallery.classList.add('fading');
+      if (id === 'all') {
+        // Show lookbook, hide masonry
+        const portfolioTop = document.getElementById('portfolio');
+        portfolioTop.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      setTimeout(() => {
-        if (id === 'all') {
-          buildGallery(shuffle(allPhotos).slice(0, 12));
-        } else {
+        gallery.classList.remove('entering');
+        gallery.classList.add('fading');
+        setTimeout(() => {
+          gallery.innerHTML = '';
+          gallery.classList.remove('fading');
+          lookbookEl.style.display = '';
+          buildLookbook();
+        }, 260);
+      } else {
+        // Hide lookbook, show masonry
+        // Scroll to portfolio header so the gallery stays in view
+        const portfolioSection = document.getElementById('portfolio');
+        portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        lookbookEl.style.display = 'none';
+        gallery.classList.remove('entering');
+        gallery.classList.add('fading');
+        setTimeout(() => {
           const s = sessions.find(s => s.id === id);
           buildGallery(s.files.map(f => ({ src: imgSrc(s, f), session: s.label })));
-        }
-        // Crossfade in
-        gallery.classList.remove('fading');
-        requestAnimationFrame(() => gallery.classList.add('entering'));
-      }, 260);
+          gallery.classList.remove('fading');
+          requestAnimationFrame(() => gallery.classList.add('entering'));
+        }, 260);
+      }
     }
 
     setFilter('all');
-    gallery.classList.add('entering');
 
     // ── LIGHTBOX (upgraded) ──
     let lbIdx = 0;
@@ -1538,26 +1857,60 @@
 
     // ── SCROLL HINT ──
     const scrollHint = document.getElementById('scrollHint');
-    gsap.to(scrollHint, { opacity: 1, duration: 0.6, delay: 2.2, ease: 'power1.out' });
-    ScrollTrigger.create({
-      trigger: '.intro',
-      start: 'top 90%',
-      onEnter: () => gsap.to(scrollHint, { opacity: 0, duration: 0.3 }),
-    });
+    if (!reducedMotion) {
+      gsap.to(scrollHint, { opacity: 1, duration: 0.6, delay: 2.2, ease: 'power1.out' });
+      ScrollTrigger.create({
+        trigger: '.intro',
+        start: 'top 90%',
+        onEnter: () => gsap.to(scrollHint, { opacity: 0, duration: 0.3 }),
+      });
+    } else {
+      scrollHint.style.opacity = '1';
+    }
 
+    // ── PHOTO STRIP + CONTACT TEXTURE BACKGROUNDS ──
+    const stripPhoto = shuffle(allPhotos)[0];
+    document.getElementById('photoStripImg').style.backgroundImage = `url('${stripPhoto.src}')`;
+    const contactPhoto = shuffle(allPhotos)[0];
+    document.getElementById('contactTexture').style.backgroundImage = `url('${contactPhoto.src}')`;
+
+    // ── SIGNATURE SVG DRAW ──
+    const sigPath = document.getElementById('signaturePath');
+    if (sigPath) {
+      const sigLen = sigPath.getTotalLength();
+      sigPath.style.strokeDasharray = sigLen;
+      sigPath.style.strokeDashoffset = sigLen;
+      if (!reducedMotion) {
+        ScrollTrigger.create({
+          trigger: '.about-signature',
+          start: 'top 85%',
+          once: true,
+          onEnter: () => {
+            gsap.to(sigPath, { strokeDashoffset: 0, duration: 1.4, ease: 'power1.inOut' });
+          }
+        });
+      } else {
+        sigPath.style.strokeDashoffset = '0';
+      }
+    }
+
+    if (!reducedMotion) {
     // ── HERO ENTRANCE (CINEMATIC) ──
     gsap.set('#heroLeft', { opacity: 0, x: -60 });
     gsap.set('#heroRight .hero-eyebrow', { opacity: 0, y: 20 });
-    gsap.set('#heroRight .hero-name', { opacity: 0, y: 40 });
+    gsap.set('#heroRight .hero-name', { opacity: 1 });
     gsap.set('#heroRight .hero-sub-title', { opacity: 0, y: 20 });
     gsap.set('#heroRight .hero-style', { opacity: 0, y: 15 });
     gsap.set('#heroRight .hero-ctas', { opacity: 0, y: 20 });
+
+    const nameLines = document.querySelectorAll('.hero-name-line span');
 
     const heroTl = gsap.timeline({ delay: 0.4 });
     heroTl
       .to('#heroLeft',                    { opacity: 1, x: 0, duration: 0.9, ease: 'power2.out' })
       .to('#heroRight .hero-eyebrow',     { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.5')
-      .to('#heroRight .hero-name',        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.35')
+      .to(nameLines[0],                   { y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.35')
+      .to(nameLines[1],                   { y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
       .to('#heroRight .hero-sub-title',   { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.3')
       .to('#heroRight .hero-style',       { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.25')
       .to('#heroRight .hero-ctas',        { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.2');
@@ -1567,8 +1920,18 @@
     gsap.from('.intro-quote', { scrollTrigger: { trigger: '.intro', start: 'top 82%', once: true }, opacity: 0, y: 22, duration: 0.7, ease: 'power1.out', delay: 0.15 });
     gsap.from('.intro-detail', { scrollTrigger: { trigger: '.intro', start: 'top 82%', once: true }, opacity: 0, y: 15, duration: 0.6, ease: 'power1.out', delay: 0.3 });
 
+    // Section dividers
+    document.querySelectorAll('.section-divider').forEach(div => {
+      gsap.from(div, { scrollTrigger: { trigger: div, start: 'top 90%', once: true }, opacity: 0, scaleX: 0, duration: 0.5, ease: 'power1.out' });
+    });
+
     gsap.from(['.portfolio-header .section-eyebrow', '.portfolio-header .section-title'], { scrollTrigger: { trigger: '.portfolio-header', start: 'top 85%', once: true }, opacity: 0, y: 20, duration: 0.6, stagger: 0.12, ease: 'power1.out' });
     gsap.from('.filter-bar', { scrollTrigger: { trigger: '.filter-bar', start: 'top 90%', once: true }, opacity: 0, y: 15, duration: 0.5, ease: 'power1.out' });
+
+    // Photo strip
+    gsap.from('.photo-strip-quote', { scrollTrigger: { trigger: '.photo-strip', start: 'top 75%', once: true }, opacity: 0, y: 25, duration: 0.8, ease: 'power1.out' });
+    gsap.from('.photo-strip-rule', { scrollTrigger: { trigger: '.photo-strip', start: 'top 75%', once: true }, scaleX: 0, duration: 0.5, ease: 'power1.out', delay: 0.3 });
+    gsap.from('.photo-strip-attr', { scrollTrigger: { trigger: '.photo-strip', start: 'top 75%', once: true }, opacity: 0, duration: 0.5, ease: 'power1.out', delay: 0.5 });
 
     // About
     gsap.from('.about-photo', { scrollTrigger: { trigger: '.about-inner', start: 'top 85%', once: true }, opacity: 0, x: -50, duration: 0.8, ease: 'power2.out' });
@@ -1576,6 +1939,7 @@
 
     // Contact
     gsap.from('.contact-inner', { scrollTrigger: { trigger: '.contact', start: 'top 80%', once: true }, opacity: 0, y: 30, duration: 0.7, ease: 'power1.out' });
+    } // end !reducedMotion
   </script>
 
 </body>
